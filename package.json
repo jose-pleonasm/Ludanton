@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "transform": "node node_modules/babel-cli/bin/babel src/js --out-dir dist --source-map"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/jose-pleonasm/Ludanton/issues"
   },
-  "homepage": "https://github.com/jose-pleonasm/Ludanton#readme"
+  "homepage": "https://github.com/jose-pleonasm/Ludanton#readme",
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.1.8"
+  }
 }
