@@ -1,3 +1,4 @@
+import { DEBUG } from '../settings.js';
 
 /**
  * A base error class.
@@ -14,7 +15,13 @@ class LudantonError extends Error {
 		code = code || '';
 		category = category || 'UNKNOWN';
 
-		super(`${category}:${code}`);
+		let verbose = '';
+
+		if (DEBUG) {
+			verbose = `: ${String(data)}`;
+		}
+
+		super(`[${category}] ${code}${verbose}`);
 
 		this.category = category;
 		this.code = code;
