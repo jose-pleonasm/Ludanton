@@ -111,7 +111,7 @@ const HTMLVideoElement = Object.assign({}, HTMLMediaElement, {
 	playsInline: false, // Boolean
 });
 
-const video = Object.assign({}, HTMLVideoElement, {
+const videoProperties = Object.assign({}, HTMLVideoElement, {
 	autoplay: false, // Boolean
 	buffered: {}, // TimeRanges
 	controls: false, // Boolean
@@ -127,4 +127,4 @@ const video = Object.assign({}, HTMLVideoElement, {
 	playsinline: undefined, // Boolean
 });
 
-export default video;
+export default videoProperties;
