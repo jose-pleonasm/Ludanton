@@ -8,6 +8,9 @@ const mockStopCallback = jest.fn((event) => {
 const mockPreventCallback = jest.fn((event) => {
 	event.preventDefault();
 });
+const mockEventListener = {
+	handleEvent: jest.fn(),
+};
 
 class MockEvent {
 	constructor(type) {
@@ -20,6 +23,7 @@ beforeEach(() => {
 	mockCallback.mockClear();
 	mockStopCallback.mockClear();
 	mockPreventCallback.mockClear();
+	mockEventListener.handleEvent.mockClear();
 });
 
 
@@ -86,6 +90,15 @@ describe('#dispatchEvent', () => {
 		et.dispatchEvent(eventIrrel);
 
 		expect(mockCallback.mock.calls.length).toBe(1);
+	});
+	test('should accept EventListener interface.', () => {
+		const et = new LudantonEventTarget();
+		const event = new MockEvent('test');
+
+		et.addEventListener('test', mockEventListener);
+		et.dispatchEvent(event);
+
+		expect(mockEventListener.handleEvent.mock.calls.length).toBe(1);
 	});
 	test('should call event listener as many times'
 		+ ' as it is registered.', () => {

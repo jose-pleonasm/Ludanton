@@ -13,14 +13,14 @@ class LudantonEventTarget {
 
 	/**
 	 * @param {string}   type
-	 * @param {Function} callback  TODO: EventListener
+	 * @param {(Function|EventListener)} callback
 	 * @param {(Object|boolean)}   [options]
 	 */
 	addEventListener(type, callback, options = false) {
 		if (callback === null) {
 			return;
 		}
-		if (typeof callback !== 'function') {
+		if (typeof callback !== 'function' && typeof callback !== 'object') {
 			throw new TypeError(
 				'Argument 2 of LudantonEventTarget.addEventListener'
 				+ ' is not a function.'
@@ -35,14 +35,14 @@ class LudantonEventTarget {
 
 	/**
 	 * @param {string}   type
-	 * @param {Function} callback  TODO: EventListener
+	 * @param {(Function|EventListener)} callback
 	 * @param {(Object|boolean)}   [options]
 	 */
 	removeEventListener(type, callback, options = false) {
 		if (callback === null) {
 			return;
 		}
-		if (typeof callback !== 'function') {
+		if (typeof callback !== 'function' && typeof callback !== 'object') {
 			throw new TypeError(
 				'Argument 2 of LudantonEventTarget.removeEventListener'
 				+ ' is not a function.'
@@ -121,7 +121,11 @@ class LudantonEventTarget {
 				break;
 			}
 
-			listeners[i].call(event.target, event);
+			if (typeof listeners[i] === 'function') {
+				listeners[i].call(event.target, event);
+			} else {
+				listeners[i].handleEvent(event);
+			}
 		}
 
 		return !event.defaultPrevented;
