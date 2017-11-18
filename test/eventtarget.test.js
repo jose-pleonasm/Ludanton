@@ -2,6 +2,7 @@ const LudantonEventTarget = require('../src/js/utils/eventtarget').default;
 
 
 const mockCallback = jest.fn();
+const mockAnotherCallback = jest.fn();
 const mockStopCallback = jest.fn((event) => {
 	event.stopImmediatePropagation();
 });
@@ -21,6 +22,7 @@ class MockEvent {
 
 beforeEach(() => {
 	mockCallback.mockClear();
+	mockAnotherCallback.mockClear();
 	mockStopCallback.mockClear();
 	mockPreventCallback.mockClear();
 	mockEventListener.handleEvent.mockClear();
@@ -146,6 +148,19 @@ describe('#dispatchEvent', () => {
 		et.dispatchEvent(event);
 
 		expect(mockStopCallback.mock.calls.length).toBe(1);
+	});
+	test('should call event listener only once, because'
+		+ ' flag once is set to true.', () => {
+		const et = new LudantonEventTarget();
+		const event = new MockEvent('test');
+
+		et.addEventListener('test', mockCallback, { once: true });
+		et.addEventListener('test', mockAnotherCallback);
+		et.dispatchEvent(event);
+		et.dispatchEvent(event);
+
+		expect(mockCallback.mock.calls.length).toBe(1);
+		expect(mockAnotherCallback.mock.calls.length).toBe(2);
 	});
 	test('should return false'
 		+ ' when preventDefault was call.', () => {

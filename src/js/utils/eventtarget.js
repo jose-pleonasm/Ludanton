@@ -120,15 +120,26 @@ class LudantonEventTarget {
 			return true;
 		}
 
-		for (let i = 0, len = listeners.length; i < len; i++) {
+		for (let i = 0; i < listeners.length; i++) {
 			if (stopImmediatePropagation) {
 				break;
 			}
 
-			if (typeof listeners[i].callback === 'function') {
-				listeners[i].callback.call(event.target, event);
+			const listener = listeners[i];
+
+			if (typeof listener.callback === 'function') {
+				listener.callback.call(event.target, event);
 			} else {
-				listeners[i].callback.handleEvent(event);
+				listener.callback.handleEvent(event);
+			}
+
+			if (listener.opts.once) {
+				this.removeEventListener(
+					event.type,
+					listener.callback,
+					listener.opts
+				);
+				i--;
 			}
 		}
 
