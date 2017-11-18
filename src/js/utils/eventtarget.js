@@ -4,6 +4,10 @@
  */
 class LudantonEventTarget {
 	constructor() {
+		/**
+		 * @private
+		 * @type {Object}
+		 */
 		this._listeners = {};
 	}
 
@@ -63,6 +67,91 @@ class LudantonEventTarget {
 			}
 		}
 	}
+
+	/**
+	 * @param  {Event} event
+	 * @return {boolean}
+	 */
+	dispatchEvent(event) {
+		if (!event || typeof event.type !== 'string') {
+			throw new TypeError(
+				'Argument 1 of LudantonEventTarget.dispatchEvent'
+				+ ' does not implement interface Event.');
+		}
+
+		const listeners = this._listeners[event.type];
+		let stopImmediatePropagation = false;
+
+		Object.defineProperties(event, {
+			target: {
+				value: this,
+				enumerable: true,
+				configurable: true,
+			},
+			cancelable: {
+				value: true,
+				enumerable: true,
+				configurable: true,
+			},
+			defaultPrevented: {
+				value: false,
+				enumerable: true,
+				configurable: true,
+			},
+		});
+		event.preventDefault = () => {
+			if (event.cancelable) {
+				Object.defineProperty(
+					event,
+					'defaultPrevented',
+					{ value: true }
+				);
+			}
+		};
+		event.stopImmediatePropagation = () => {
+			stopImmediatePropagation = true;
+		};
+
+		if (!listeners) {
+			return true;
+		}
+
+		for (let i = 0, len = listeners.length; i < len; i++) {
+			if (stopImmediatePropagation) {
+				break;
+			}
+
+			listeners[i](event);
+		}
+
+		return !event.defaultPrevented;
+	}
 }
 
 export default LudantonEventTarget;
+
+function getOptions(options) {
+	let capture = false;
+	let once = false;
+	let passive = false;
+
+	if (options === true) {
+		capture = true;
+	} else if (options) {
+		if (typeof options.capture !== 'undefined') {
+			capture = !!options.capture;
+		}
+		if (typeof options.once !== 'undefined') {
+			once = !!options.once;
+		}
+		if (typeof options.passive !== 'undefined') {
+			passive = !!options.passive;
+		}
+	}
+
+	return {
+		capture,
+		once,
+		passive,
+	};
+}
