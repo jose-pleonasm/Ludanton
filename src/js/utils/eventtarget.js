@@ -121,7 +121,7 @@ class LudantonEventTarget {
 				break;
 			}
 
-			listeners[i](event);
+			listeners[i].call(event.target, event);
 		}
 
 		return !event.defaultPrevented;
