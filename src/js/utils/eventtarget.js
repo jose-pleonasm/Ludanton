@@ -27,10 +27,12 @@ class LudantonEventTarget {
 			);
 		}
 
+		const opts = getOptions(options);
+
 		if (!this._listeners[type]) {
 			this._listeners[type] = [];
 		}
-		this._listeners[type].push(callback);
+		this._listeners[type].push({ callback, opts });
 	}
 
 	/**
@@ -49,6 +51,7 @@ class LudantonEventTarget {
 			);
 		}
 
+		const opts = getOptions(options);
 		const listeners = this._listeners[type];
 
 		if (!listeners) {
@@ -56,7 +59,8 @@ class LudantonEventTarget {
 		}
 
 		for (let i = listeners.length - 1; i >= 0; i--) {
-			if (listeners[i] === callback) {
+			if (listeners[i].callback === callback
+				&& listeners[i].opts.capture === opts.capture) {
 				listeners.splice(i, 1);
 
 				if (!listeners.length) {
@@ -121,10 +125,10 @@ class LudantonEventTarget {
 				break;
 			}
 
-			if (typeof listeners[i] === 'function') {
-				listeners[i].call(event.target, event);
+			if (typeof listeners[i].callback === 'function') {
+				listeners[i].callback.call(event.target, event);
 			} else {
-				listeners[i].handleEvent(event);
+				listeners[i].callback.handleEvent(event);
 			}
 		}
 

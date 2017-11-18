@@ -169,4 +169,37 @@ describe('Complex operations', () => {
 
 		expect(mockCallback.mock.calls.length).toBe(0);
 	});
+	test('should not remove event listener, because'
+		+ ' it has different capture flag.', () => {
+		const et = new LudantonEventTarget();
+		const event = new MockEvent('test');
+
+		et.addEventListener('test', mockCallback, { capture: true });
+		et.removeEventListener('test', mockCallback, { capture: false });
+		et.dispatchEvent(event);
+
+		expect(mockCallback.mock.calls.length).toBe(1);
+	});
+	test('should remove event listener, because'
+		+ ' capture flag is evaluate as the same.', () => {
+		const et = new LudantonEventTarget();
+		const event = new MockEvent('test');
+
+		et.addEventListener('test', mockCallback, { capture: false });
+		et.removeEventListener('test', mockCallback, false);
+		et.dispatchEvent(event);
+
+		expect(mockCallback.mock.calls.length).toBe(0);
+	});
+	test('should remove event listener, because'
+		+ ' passive flag is not relevant.', () => {
+		const et = new LudantonEventTarget();
+		const event = new MockEvent('test');
+
+		et.addEventListener('test', mockCallback, { passive: true });
+		et.removeEventListener('test', mockCallback, { passive: false });
+		et.dispatchEvent(event);
+
+		expect(mockCallback.mock.calls.length).toBe(0);
+	});
 });
