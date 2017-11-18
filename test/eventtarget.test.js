@@ -1,4 +1,4 @@
-const LudantonEventTarget = require('../dist/utils/eventtarget').default;
+const LudantonEventTarget = require('../src/js/utils/eventtarget').default;
 
 function eventListener() {};
 

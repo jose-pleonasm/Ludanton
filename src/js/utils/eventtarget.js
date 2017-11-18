@@ -45,15 +45,20 @@ class LudantonEventTarget {
 			);
 		}
 
-		const stack = this._listeners[type];
+		const listeners = this._listeners[type];
 
-		if (!stack) {
+		if (!listeners) {
 			return;
 		}
 
-		for (let i = stack.length - 1; i >= 0; i--) {
-			if (stack[i] === callback) {
-				stack.splice(i, 1);
+		for (let i = listeners.length - 1; i >= 0; i--) {
+			if (listeners[i] === callback) {
+				listeners.splice(i, 1);
+
+				if (!listeners.length) {
+					delete this._listeners[type];
+				}
+
 				return;
 			}
 		}
