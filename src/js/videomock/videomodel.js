@@ -223,7 +223,6 @@ class HTMLElement extends Element {
 	}
 }
 
-
 class HTMLMediaElement extends HTMLElement {
 	constructor(properties) {
 		super();
@@ -272,7 +271,6 @@ class HTMLMediaElement extends HTMLElement {
 	}
 }
 
-
 class VideoModel extends HTMLMediaElement {
 	constructor(properties) {
 		super();
@@ -284,6 +282,5 @@ class VideoModel extends HTMLMediaElement {
 		return {}; // VideoPlaybackQuality
 	}
 }
-
 
 export default VideoModel;

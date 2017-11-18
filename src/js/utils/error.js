@@ -23,8 +23,19 @@ class LudantonError extends Error {
 
 		super(`[${category}] ${code}${verbose}`);
 
+		/**
+		 * @type {string}
+		 */
 		this.category = category;
+
+		/**
+		 * @type {string}
+		 */
 		this.code = code;
+
+		/**
+		 * @type {Array<*>}
+		 */
 		this.data = data;
 	}
 
