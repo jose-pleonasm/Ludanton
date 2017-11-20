@@ -23,6 +23,10 @@ class LudantonError extends Error {
 
 		super(`[${category}] ${code}${verbose}`);
 
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, LudantonError);
+		}
+
 		/**
 		 * @type {string}
 		 */
