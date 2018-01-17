@@ -174,7 +174,7 @@ describe('#dispatchEvent', () => {
 });
 
 describe('Complex operations', () => {
-	test('should not call unregistered event listener.', () => {
+	test('shouldn\'t call unregistered event listener.', () => {
 		const et = new LudantonEventTarget();
 		const event = new MockEvent('test');
 
@@ -184,7 +184,7 @@ describe('Complex operations', () => {
 
 		expect(mockCallback.mock.calls.length).toBe(0);
 	});
-	test('should not remove event listener, because'
+	test('shouldn\'t remove event listener, because'
 		+ ' it has different capture flag.', () => {
 		const et = new LudantonEventTarget();
 		const event = new MockEvent('test');
