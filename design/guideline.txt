@@ -1,0 +1,3 @@
+Progressive enhancement
+Mobile first
+JS code style: https://github.com/airbnb/javascript
