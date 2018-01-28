@@ -1,3 +1,9 @@
 Progressive enhancement
 Mobile first
 JS code style: https://github.com/airbnb/javascript
+
+Modules vs. components
+======================
+There is a reference in OSGi in action which I believed it explained the differences are very good.
+
+Modules vs. components Doesn’t it sound like modules and components have a lot in common? They both provide stuff to each other and consume stuff from each other. They’re also packaged as independent deployment units. Couldn’t these two be considered one and the same or at least be combined? Yes, they could, but components and modules serve different purposes and are somewhat orthogonal (they’re not completely orthogonal, because components are made from code that can ultimately be packaged into modules). Modules deal with code packaging and the dependencies among code. Components deal with implementing higher-level functionality and the dependencies among components. Components need their code dependencies managed, but they technically don’t need a module system to do it (often it’s us programmers doing it via the class path). A good summary is that you can think of modules as dealing with static code and compile-time dependencies, whereas components deal with instances and executiontime dependencies.
