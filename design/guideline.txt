@@ -1,6 +1,7 @@
 Progressive enhancement
 Mobile first
 JS code style: https://github.com/airbnb/javascript
+CSS rule order: https://9elements.com/css-rule-order/
 
 Modules vs. components
 ======================
