@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "transform": "node node_modules/babel-cli/bin/babel src/js --out-dir dist --source-map"
+    "build": "npm run transform && npm run browserify",
+
+    "transform": "babel src/js --out-dir dist --source-map",
+    "browserify": "browserify dist/player.js --s Player > dist/player.bundle.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +26,7 @@
     "babel-jest": "^23.0.1",
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-preset-env": "^1.7.0",
+    "browserify": "^16.2.2",
     "jest": "^23.1.0",
     "regenerator-runtime": "^0.11.1"
   },
