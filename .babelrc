@@ -1,8 +1,4 @@
 {
 	"presets": ["env"],
-	"plugins": [
-		["babel-plugin-transform-builtin-extend", {
-			globals: ["Error"]
-		}]
-	]
+	"plugins": ["transform-es2015-classes"]
 }
