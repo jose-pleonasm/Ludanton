@@ -6,7 +6,6 @@
   "scripts": {
     "test": "jest",
     "build": "npm run transform && npm run browserify",
-
     "transform": "babel src/js --out-dir dist --source-map",
     "browserify": "browserify dist/index.js --standalone Ludanton > dist/ludanton.bundle.js"
   },
@@ -23,10 +22,12 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
     "babel-jest": "^23.0.1",
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "browserify": "^16.2.2",
+    "eslint": "^4.19.1",
     "jest": "^23.1.0",
     "regenerator-runtime": "^0.11.1"
   },
