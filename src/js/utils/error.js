@@ -1,5 +1,6 @@
 import { DEBUG } from '../settings.js';
 
+
 /**
  * A base error class.
  *
@@ -72,5 +73,6 @@ LudantonError.Category = {
 	/** Miscellaneous errors. */
 	'GENERAL': 'GENERAL',
 };
+
 
 export default LudantonError;
