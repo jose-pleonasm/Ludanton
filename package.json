@@ -8,7 +8,7 @@
     "build": "npm run transform && npm run browserify",
 
     "transform": "babel src/js --out-dir dist --source-map",
-    "browserify": "browserify dist/player.js --s Player > dist/player.bundle.js"
+    "browserify": "browserify dist/index.js --standalone Ludanton > dist/ludanton.bundle.js"
   },
   "repository": {
     "type": "git",
