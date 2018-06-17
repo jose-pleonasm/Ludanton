@@ -1,3 +1,4 @@
+'use strict';
 import LudantonError from './utils/error.js';
 import LudantonEventTarget from './utils/eventtarget.js';
 

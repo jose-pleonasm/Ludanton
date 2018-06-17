@@ -26,6 +26,7 @@
     "babel-jest": "^23.0.1",
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-1": "^6.24.1",
     "browserify": "^16.2.2",
     "eslint": "^4.19.1",
     "jest": "^23.1.0",

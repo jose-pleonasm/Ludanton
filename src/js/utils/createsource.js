@@ -1,5 +1,6 @@
+'use strict';
 import { getTypeByFilename } from './general.js';
-import './source.js';
+import '../core/source.js';
 
 
 /**
@@ -45,5 +46,5 @@ export default (msd) => {
 		return Object.freeze(source);
 	});
 
-	return sources;
+	return Object.freeze(sources);
 };

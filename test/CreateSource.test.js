@@ -1,4 +1,5 @@
 /* global test:Function, expect:Function */
+'use strict';
 const createSource = require('../src/js/utils/createsource').default;
 
 
@@ -119,4 +120,25 @@ test('should return right src and qualityDescriptor'
 	expect(source[1].src).toBe('/path/filename2.mp4');
 	expect(source[1].type).toBe('video/mp4');
 	expect(source[1].qualityDescriptor).toBe('1080p');
+});
+
+test('should return immutable object.', () => {
+	const src = [
+		{
+			src: '/path/filename1.mp4',
+			type: 'video/mp4',
+			qualityDescriptor: '480p',
+		},
+		{
+			src: '/path/filename2.mp4',
+			type: 'video/mp4',
+			qualityDescriptor: '1080p',
+		},
+	];
+	let source = null;
+
+	source = createSource(src);
+
+	expect(() => { source[0].src = ''; }).toThrow();
+	expect(() => { source[0] = null; }).toThrow();
 });

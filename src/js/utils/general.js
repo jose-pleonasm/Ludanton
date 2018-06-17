@@ -1,3 +1,4 @@
+'use strict';
 import { EXT_TYPE_MAP } from '../settings.js';
 
 
