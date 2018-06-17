@@ -1,6 +1,6 @@
 /* global jest:Object, test:Function, expect:Function, beforeEach:Function, describe:Function */
 'use strict';
-const LudantonEventTarget = require('../src/js/utils/eventtarget').default;
+const LudantonEventTarget = require('../src/js/utils/EventTarget').default;
 
 
 const mockCallback = jest.fn();

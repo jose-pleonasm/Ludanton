@@ -1,6 +1,6 @@
 'use strict';
 import { getTypeByFilename } from './general.js';
-import '../core/source.js';
+import '../core/Source.js';
 
 
 /**

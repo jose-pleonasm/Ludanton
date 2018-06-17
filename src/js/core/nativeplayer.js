@@ -1,6 +1,6 @@
 'use strict';
-import LudantonError from '../utils/error.js';
-import EventTarget from '../utils/eventtarget.js';
+import LudantonError from '../utils/Error.js';
+import EventTarget from '../utils/EventTarget.js';
 import EventManager from '../utils/EventManager.js';
 
 class NativePlayer extends EventTarget {
