@@ -79,7 +79,11 @@ test('should return array with one object with right properties'
 
 test('should return right src and qualityDescriptor'
 	+ ' if gives explicit object.', () => {
-	const src = { src: '/path/filename.mp4  720p', type: 'video/mp4' };
+	const src = {
+		src: '/path/filename.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '720p',
+	};
 	let source = null;
 
 	source = createSource(src);
@@ -93,8 +97,16 @@ test('should return right src and qualityDescriptor'
 test('should return right src and qualityDescriptor'
 	+ ' if gives explicit array.', () => {
 	const src = [
-		{ src: '/path/filename1.mp4 480p', type: 'video/mp4' },
-		{ src: '/path/filename2.mp4	1080p', type: 'video/mp4' },
+		{
+			src: '/path/filename1.mp4',
+			type: 'video/mp4',
+			qualityDescriptor: '480p',
+		},
+		{
+			src: '/path/filename2.mp4',
+			type: 'video/mp4',
+			qualityDescriptor: '1080p',
+		},
 	];
 	let source = null;
 
