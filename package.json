@@ -33,6 +33,8 @@
     "regenerator-runtime": "^0.11.1"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0"
+    "babel-polyfill": "^6.26.0",
+    "py-logging": "^2.0.0",
+    "py-logging-browserkit": "^1.1.0"
   }
 }

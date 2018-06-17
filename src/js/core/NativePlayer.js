@@ -2,6 +2,10 @@
 import LudantonError from '../utils/Error.js';
 import EventTarget from '../utils/EventTarget.js';
 import EventManager from '../utils/EventManager.js';
+import logging from '../utils/logging.js';
+
+
+const logger = logging.getLogger('NativePlayer');
 
 class NativePlayer extends EventTarget {
 	constructor(element) {
@@ -117,7 +121,7 @@ class NativePlayer extends EventTarget {
 	}
 
 	_handleTimeupdate(event) {
-		console.debug(event);
+		logger.debug(event);
 	}
 
 	_handleCanplaythrough(event) {
