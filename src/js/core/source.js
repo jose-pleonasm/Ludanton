@@ -3,7 +3,7 @@
 /**
  * @typedef {string} MediaUrl
  * @example
- * 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4'
+ * 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4'
  */
 
 /**
@@ -13,12 +13,12 @@
  * @property {string} [qualityDescriptor]
  * @example
  * {
- * 	src: 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4',
+ * 	src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
  * 	type: 'video/mp4'
  * }
  * OR
  * {
- * 	src: 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4',
+ * 	src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
  * 	type: 'video/mp4',
  * 	qualityDescriptor: '720p'
  * }
@@ -29,12 +29,12 @@
  * @example
  * [
  * 	{
- * 		src: 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4',
+ * 		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
  * 		type: 'video/mp4'
  * 	},
  * 	{
- * 		src: 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.webm',
- * 		type: 'video/webm'
+ * 		src: 'https://archive.org/download/ElephantsDream/ed_hd.ogv',
+ * 		type: 'video/ogg'
  * 	}
  * ]
  */
@@ -44,12 +44,12 @@
  * @example
  * [
  * 	{
- * 		src: 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4',
+ * 		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
  * 		type: 'video/mp4',
  * 		qualityDescriptor: '720p'
  * 	},
  * 	{
- * 		src: 'https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_360p_surround.mp4',
+ * 		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_lq.mp4',
  * 		type: 'video/mp4',
  * 		qualityDescriptor: '360p'
  * 	}

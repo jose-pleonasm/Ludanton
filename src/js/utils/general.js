@@ -2,6 +2,16 @@
 import { EXT_TYPE_MAP } from '../settings.js';
 
 
+/**
+ * getTypeByFilename
+ * @example
+ * // returns 'video/mp4'
+ * getTypeByFilename(
+ * 	'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4'
+ * );
+ * @param  {string} path
+ * @return {string}
+ */
 export const getTypeByFilename = (path) => {
 	const fileExt = getFileExt(path);
 	const type = EXT_TYPE_MAP[fileExt];

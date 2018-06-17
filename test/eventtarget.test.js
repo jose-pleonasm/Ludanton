@@ -1,3 +1,5 @@
+/* global jest:Object, test:Function, expect:Function, beforeEach:Function, describe:Function */
+'use strict';
 const LudantonEventTarget = require('../src/js/utils/eventtarget').default;
 
 

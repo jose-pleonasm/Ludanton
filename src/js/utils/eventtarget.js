@@ -1,5 +1,6 @@
 'use strict';
 
+
 /**
  * EventTarget.
  */
@@ -148,7 +149,9 @@ class LudantonEventTarget {
 	}
 }
 
+
 export default LudantonEventTarget;
+
 
 function getOptions(options) {
 	let capture = false;
