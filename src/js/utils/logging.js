@@ -1,11 +1,12 @@
+/* global logging:Object, commonkit:Object, py_logging_browserkit:Object */
 'use strict';
-import logging from 'py-logging';
-import commonkit from 'py-logging/commonkit';
-import browserkit from 'py-logging-browserkit';
+// import logging from 'py-logging';
+// import commonkit from 'py-logging/commonkit';
+// import py_logging_browserkit from 'py-logging-browserkit';
 
 
 commonkit.install(logging);
-browserkit.install(logging);
+py_logging_browserkit.install(logging);
 
 logging.config({
 	version: 1,
@@ -18,7 +19,7 @@ logging.config({
 		},
 		stylish: {
 			class: 'logging.StylishConsoleFormatter',
-			format: '%(name)-14s %(message)O %(args)O'
+			format: '%(name)-14s %(message)o %(args)O'
 		},
 	},
 	handlers: {

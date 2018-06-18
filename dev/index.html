@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="<%= htmlWebpackPlugin.options.lang %>">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Ludanton demo</title>
+	<script type="text/javascript" src="./dev/py-logging.bundle.js"></script>
+	<script type="text/javascript" src="./dev/pl-common.bundle.js"></script>
+	<script type="text/javascript" src="./node_modules/py-logging-browserkit/lib/browserkit.js"></script>
+</head>
+<body>
+	<div id="container">
+		<video id="video" src="" controls></video>
+		<button id="button">button</button>
+	</div>
+	<script type="text/javascript">
+
+'use strict';
+
+//const player = document.getElementById('button');
+const element = document.querySelector('#video');
+const player = new Ludanton.default.Player(element);
+
+player.setSource(
+	'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4'
+);
+player.play();
+
+	</script>
+</body>
+</html>

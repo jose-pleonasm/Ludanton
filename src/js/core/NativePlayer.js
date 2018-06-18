@@ -103,20 +103,16 @@ class NativePlayer extends EventTarget {
 		}
 	}
 
-	_handleReadystatechange(event) {
-		console.debug(event);
-	}
-
 	_handleLoadedmetadata(event) {
-		console.debug(event);
+		logger.debug(event);
 	}
 
 	_handlePlay(event) {
-		console.debug(event);
+		logger.debug(event);
 	}
 
 	_handlePlaying(event) {
-		console.debug(event);
+		logger.debug(event);
 		this._resolvePlayPromise();
 	}
 
@@ -125,11 +121,11 @@ class NativePlayer extends EventTarget {
 	}
 
 	_handleCanplaythrough(event) {
-		console.debug(event);
+		logger.debug(event);
 	}
 
 	_handleError(event) {
-		console.debug(event);
+		logger.debug(event);
 	}
 }
 
