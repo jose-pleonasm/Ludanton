@@ -1,14 +1,15 @@
 'use strict';
+import ludanton from './index.js';
 import VideoProperties from './videomock/videoproperties.js';
 import VideoModel from './videomock/videomodel.js';
 import LudantonError from './utils/Error.js';
 import LudantonEventTarget from './utils/EventTarget.js';
-import Player from './Player.js';
+import createSource from './utils/createSource.js';
 
-export default {
+export default Object.assign(ludanton, {
 	VideoProperties,
 	VideoModel,
 	LudantonError,
 	LudantonEventTarget,
-	Player,
-};
+	createSource,
+});

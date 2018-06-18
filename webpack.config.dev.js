@@ -11,7 +11,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
 module.exports = {
 	mode: 'development',
 	devtool: 'inline-source-map',
-	entry: './src/js/index.js',
+	entry: './src/js/dev.js',
 	output: {
 		path: path.resolve(__dirname, './dist'),
 		filename: 'ludanton.js',
