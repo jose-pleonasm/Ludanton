@@ -104,28 +104,28 @@ class NativePlayer extends EventTarget {
 	}
 
 	_handleLoadedmetadata(event) {
-		logger.debug(event);
+		logger.trace(`@${event.type}`, event);
 	}
 
 	_handlePlay(event) {
-		logger.debug(event);
+		logger.trace(`@${event.type}`, event);
 	}
 
 	_handlePlaying(event) {
-		logger.debug(event);
+		logger.trace(`@${event.type}`, event);
 		this._resolvePlayPromise();
 	}
 
 	_handleTimeupdate(event) {
-		logger.debug(event);
+		logger.trace(`@${event.type}`, event);
 	}
 
 	_handleCanplaythrough(event) {
-		logger.debug(event);
+		logger.trace(`@${event.type}`, event);
 	}
 
 	_handleError(event) {
-		logger.debug(event);
+		logger.trace(event);
 	}
 }
 
