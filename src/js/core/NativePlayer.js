@@ -7,6 +7,9 @@ import logging from '../utils/logging.js';
 
 const logger = logging.getLogger('NativePlayer');
 
+/**
+ * NativePlayer.
+ */
 class NativePlayer extends EventTarget {
 	static _getVideo() {
 		if (!NativePlayer._video) {
@@ -16,10 +19,18 @@ class NativePlayer extends EventTarget {
 		return NativePlayer._video;
 	}
 
+	/**
+	 * @param  {Source} source
+	 * @return {string} @see
+	 * 	{@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType#Return_value}
+	 */
 	static canPlaySource(source) {
 		return NativePlayer._getVideo().canPlayType(source.type);
 	}
 
+	/**
+	 * @param  {HTMLVideoElement} element
+	 */
 	constructor(element) {
 		super();
 
@@ -34,7 +45,7 @@ class NativePlayer extends EventTarget {
 		this._source = null;
 
 		/**
-		 * @type {Array<[string, Function]>}
+		 * @type {Array<Array<string, Function>>}
 		 */
 		this._eventMap = [
 			['play', this._handlePlay],
@@ -53,13 +64,35 @@ class NativePlayer extends EventTarget {
 		 */
 		this._eventManager = new EventManager(this._eventMap);
 
+		/**
+		 * @type {(Promise|null)}
+		 */
 		this._playPromise = null;
+
+		/**
+		 * @type {(Function|null)}
+		 */
 		this._playResolve = null;
+
+		/**
+		 * @type {(Function|null)}
+		 */
 		this._playReject = null;
+
 
 		this._eventManager.listen(this._element, 'error');
 	}
 
+	/**
+	 * @return {(Source|null)}
+	 */
+	getSource() {
+		return this._source;
+	}
+
+	/**
+	 * @param {Source} source
+	 */
 	setSource(source) {
 		logger.trace('#setSource', source);
 
@@ -76,6 +109,11 @@ class NativePlayer extends EventTarget {
 		this._element.src = source.src;
 	}
 
+
+	/**
+	 * Reset the source.
+	 * Removes listeners, removes src attribute etc.
+	 */
 	resetSource() {
 		logger.trace('#resetSource');
 
@@ -95,12 +133,20 @@ class NativePlayer extends EventTarget {
 		catch (error) {}
 	}
 
+	/**
+	 * Load.
+	 */
 	load() {
 		logger.trace('#load');
 
 		this._element.load();
 	}
 
+	/**
+	 * Play.
+	 *
+	 * @return {Promise}
+	 */
 	play() {
 		logger.trace('#play');
 
@@ -116,12 +162,18 @@ class NativePlayer extends EventTarget {
 		return this._playPromise;
 	}
 
+	/**
+	 * Pause.
+	 */
 	pause() {
 		logger.trace('#pause');
 
 		this._element.pause();
 	}
 
+	/**
+	 * Reset.
+	 */
 	reset() {
 		logger.trace('#reset');
 
@@ -167,6 +219,11 @@ class NativePlayer extends EventTarget {
 		logger.trace(`@${event.type}`, event);
 	}
 
+	/**
+	 * Handles error event.
+	 *
+	 * @param  {Event} event
+	 */
 	_handleError(event) {
 		logger.trace(event);
 

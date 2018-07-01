@@ -10,7 +10,13 @@ import logging from './utils/logging.js';
 
 const logger = logging.getLogger('Player');
 
+/**
+ * Player
+ */
 class Player extends EventTarget {
+	/**
+	 * @param  {HTMLVideoElement} element
+	 */
 	constructor(element) {
 		super();
 
@@ -21,6 +27,10 @@ class Player extends EventTarget {
 		};
 	}
 
+	/**
+	 * Set the source.
+	 * @param {(MediaUrl|MediaObject|Array<MediaObject>)} src
+	 */
 	setSource(src) {
 		logger.trace('#setSource', [src]);
 		const source = createSource(src);
@@ -38,9 +48,20 @@ class Player extends EventTarget {
 		this._corePlayer.setSource(optimalSource);
 	}
 
+	/**
+	 * Starts playback of the source.
+	 */
 	play() {
 		logger.trace('#play');
 		this._corePlayer.play();
+	}
+
+	/**
+	 * Pauses playback of the source.
+	 */
+	pause() {
+		logger.trace('#pause');
+		this._corePlayer.pause();
 	}
 
 	_getOptimalSource(sources) {
@@ -99,14 +120,21 @@ class Player extends EventTarget {
 	}
 }
 
-Player.Event = Object.freeze({
+/**
+ * @alias Player.Event
+ * @readonly
+ * @enum {string}
+ */
+const EVENT = {
 	/**
-	 * @event Player.Event.ERROR
+	 * @event Player#error
 	 * @type {CustomEvent}
-	 * @property {LudantonError} event.detail Error
+	 * @property {LudantonError} detail Error
 	 */
 	'ERROR': 'error',
-});
+};
+
+Player.Event = Object.freeze(EVENT);
 
 
 export default Player;
