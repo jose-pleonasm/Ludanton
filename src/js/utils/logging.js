@@ -109,13 +109,19 @@ logging.config({
 				name: {
 					'*': {
 						'padding': '1px 5px;',
-						'background-color': '#cb2027;',
+						'background-color': '#333;',
 						'color': '#fff;',
 						'border-radius': '4px;',
 					},
 				},
 				message: {
-					'*': {
+					'^#.+': {
+						'padding': '1px 5px;',
+						'background-color': '#FF9009;',
+						'color': '#fff;',
+						'border-radius': '4px;',
+					},
+					'^@.+': {
 						'padding': '1px 5px;',
 						'background-color': '#ff5700;',
 						'color': '#fff;',

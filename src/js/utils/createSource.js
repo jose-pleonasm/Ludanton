@@ -1,5 +1,5 @@
 'use strict';
-import { getTypeByFilename } from './general.js';
+import { getTypeByFilename, parseQualityDescriptor } from './general.js';
 import '../core/Source.js';
 
 
@@ -39,9 +39,9 @@ export default (msd) => {
 	}
 
 	sources = sources.map(source => {
-		if (!source.qualityDescriptor) {
-			source.qualityDescriptor = '';
-		}
+		source.qualityDescriptor = source.qualityDescriptor
+			? parseQualityDescriptor(source.qualityDescriptor)
+			: null;
 
 		return Object.freeze(source);
 	});

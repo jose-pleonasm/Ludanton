@@ -2,8 +2,10 @@
 import { EXT_TYPE_MAP } from '../settings.js';
 
 
+const QUALITY_DESCRIPTOR_PATTERN = /([0-9]+)(p)/i;
+
 /**
- * getTypeByFilename
+ * getTypeByFilename.
  * @example
  * // returns 'video/mp4'
  * getTypeByFilename(
@@ -17,6 +19,24 @@ export const getTypeByFilename = (path) => {
 	const type = EXT_TYPE_MAP[fileExt];
 
 	return type ? type : '';
+};
+
+/**
+ * parseQualityDescriptor.
+ * @param  {string} descriptor
+ * @return {QualityDescriptor}
+ */
+export const parseQualityDescriptor = (descriptor) => {
+	const result = descriptor.match(QUALITY_DESCRIPTOR_PATTERN);
+
+	if (!result) {
+		return null;
+	}
+
+	return {
+		height: Number(result[1]),
+		unit: 'px',
+	};
 };
 
 

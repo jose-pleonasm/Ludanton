@@ -43,7 +43,7 @@ test('should return array with one object with right properties'
 	expect(source.length).toBe(1);
 	expect(source[0].src).toBe(src.src);
 	expect(source[0].type).toBe('video/mp4');
-	expect(source[0].qualityDescriptor).toBe('');
+	expect(source[0].qualityDescriptor).toBe(null);
 });
 
 test('should return array with two object with right properties'
@@ -59,10 +59,10 @@ test('should return array with two object with right properties'
 	expect(source.length).toBe(2);
 	expect(source[0].src).toBe(src[0].src);
 	expect(source[0].type).toBe('video/mp4');
-	expect(source[0].qualityDescriptor).toBe('');
+	expect(source[0].qualityDescriptor).toBe(null);
 	expect(source[1].src).toBe(src[1].src);
 	expect(source[1].type).toBe('video/webm');
-	expect(source[1].qualityDescriptor).toBe('');
+	expect(source[1].qualityDescriptor).toBe(null);
 });
 
 test('should return array with one object with right properties'
@@ -75,7 +75,7 @@ test('should return array with one object with right properties'
 	expect(source.length).toBe(1);
 	expect(source[0].src).toBe(src);
 	expect(source[0].type).toBe('video/mp4');
-	expect(source[0].qualityDescriptor).toBe('');
+	expect(source[0].qualityDescriptor).toBe(null);
 });
 
 test('should return right src and qualityDescriptor'
@@ -92,7 +92,7 @@ test('should return right src and qualityDescriptor'
 	expect(source.length).toBe(1);
 	expect(source[0].src).toBe('/path/filename.mp4');
 	expect(source[0].type).toBe('video/mp4');
-	expect(source[0].qualityDescriptor).toBe('720p');
+	expect(source[0].qualityDescriptor).toEqual({ height: 720, unit: 'px' });
 });
 
 test('should return right src and qualityDescriptor'
@@ -116,10 +116,10 @@ test('should return right src and qualityDescriptor'
 	expect(source.length).toBe(2);
 	expect(source[0].src).toBe('/path/filename1.mp4');
 	expect(source[0].type).toBe('video/mp4');
-	expect(source[0].qualityDescriptor).toBe('480p');
+	expect(source[0].qualityDescriptor).toEqual({ height: 480, unit: 'px' });
 	expect(source[1].src).toBe('/path/filename2.mp4');
 	expect(source[1].type).toBe('video/mp4');
-	expect(source[1].qualityDescriptor).toBe('1080p');
+	expect(source[1].qualityDescriptor).toEqual({ height: 1080, unit: 'px' });
 });
 
 test('should return immutable object.', () => {

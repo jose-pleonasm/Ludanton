@@ -57,8 +57,14 @@
  */
 
 /**
+ * @typedef {Object} QualityDescriptor
+ * @property {number} height
+ * @property {string} unit
+ */
+
+/**
  * @typedef {Object} Source
  * @property {string} src
  * @property {string} type
- * @property {string} qualityDescriptor
+ * @property {QualityDescriptor} qualityDescriptor
  */
