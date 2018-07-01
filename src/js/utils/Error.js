@@ -57,6 +57,24 @@ class LudantonError extends Error {
 }
 
 /**
+ * @alias LudantonError.Category
+ * @readonly
+ * @enum {string}
+ */
+const CATEGORY = {
+	/** Miscellaneous errors. */
+	'GENERAL': 'GENERAL',
+
+	/** Input errors. */
+	'INPUT': 'INPUT',
+
+	/** Errors parsing or processing audio or video streams. */
+	'MEDIA': 'MEDIA',
+};
+
+LudantonError.Category = Object.freeze(CATEGORY);
+
+/**
  * @alias LudantonError.Code
  * @readonly
  * @enum {string}
@@ -72,24 +90,16 @@ const CODE = {
 	 * {(MediaUrl|MediaObject|Array<MediaObject>)} error.data[0] source
 	 */
 	'SOURCE_UNSUPPORTED': 'SOURCE_UNSUPPORTED',
+
+	/**
+	 * {Source} error.data[0] source
+	 * {string} error.data[1] currentSrc
+	 * {Object} error.data[2] originalError
+	 */
+	'SOURCE_MEDIA': 'SOURCE_MEDIA',
 };
 
 LudantonError.Code = Object.freeze(CODE);
-
-/**
- * @alias LudantonError.Category
- * @readonly
- * @enum {string}
- */
-const CATEGORY = {
-	/** Miscellaneous errors. */
-	'GENERAL': 'GENERAL',
-
-	/** Input errors. */
-	'INPUT': 'INPUT',
-};
-
-LudantonError.Category = Object.freeze(CATEGORY);
 
 
 export default LudantonError;

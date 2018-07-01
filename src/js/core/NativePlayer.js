@@ -2,6 +2,7 @@
 import LudantonError from '../utils/Error.js';
 import EventTarget from '../utils/EventTarget.js';
 import EventManager from '../utils/EventManager.js';
+import createEvent from '../utils/createEvent.js';
 import logging from '../utils/logging.js';
 
 
@@ -184,6 +185,7 @@ class NativePlayer extends EventTarget {
 		logger.trace('#_resolvePlayPromise');
 
 		if (this._playResolve) {
+			logger.trace('playResolve');
 			this._playResolve();
 			this._playResolve = null;
 			this._playReject = null;
@@ -191,7 +193,10 @@ class NativePlayer extends EventTarget {
 	}
 
 	_rejectPlayPromise() {
+		logger.trace('#_rejectPlayPromise');
+
 		if (this._playReject) {
+			logger.trace('playReject');
 			this._playReject();
 			this._playReject = null;
 			this._playResolve = null;
@@ -232,8 +237,31 @@ class NativePlayer extends EventTarget {
 		if (mediaError.code === MediaError.MEDIA_ERR_ABORTED) {
 			return;
 		}
+
+		this._dispatchError(new LudantonError(
+			LudantonError.Code.SOURCE_MEDIA,
+			LudantonError.Category.MEDIA,
+			this._source,
+			this._element.currentSrc,
+			mediaError,
+		));
+	}
+
+	/**
+	 * @param  {Error} error
+	 */
+	_dispatchError(error) {
+		const event = createEvent(NativePlayer.Event.ERROR, error);
+
+		this.dispatchEvent(event);
+
+		return event;
 	}
 }
+
+NativePlayer.Event = Object.freeze({
+	ERROR: 'error',
+});
 
 NativePlayer._video = null;
 

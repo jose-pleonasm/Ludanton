@@ -27,10 +27,13 @@ player.addEventListener(Player.Event.ERROR, event => {
 	console.error(event.detail);
 });
 
+/*
 player.setSource(
 	'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.m3u'
 );
-/*player.setSource([
+*/
+
+player.setSource([
 	{
 		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
 		type: 'video/mp4',
@@ -46,15 +49,16 @@ player.setSource(
 		type: 'video/mp4',
 		qualityDescriptor: '2160p'
 	},
-]);*/
+]);
 player.play();
-/*
+
 setTimeout(() => {
 	player.setSource(
 		'https://storage.googleapis.com/coverr-main/mp4/Fishermans-Village.mp4'
 	);
+	player.play();
 }, 5e3);
-*/
+
 	</script>
 	<a href="./test.html">Link</a>
 </body>

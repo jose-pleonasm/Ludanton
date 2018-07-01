@@ -3,6 +3,7 @@ import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
 import env from './utils/env.js';
 import createSource from './utils/createSource.js';
+import createEvent from './utils/createEvent.js';
 import NativePlayer from './core/NativePlayer.js';
 import { RESOLUTION_FACTOR } from './settings.js';
 import logging from './utils/logging.js';
@@ -37,12 +38,11 @@ class Player extends EventTarget {
 		const optimalSource = this._getOptimalSource(source);
 
 		if (!optimalSource) {
-			this._dispatchError(new LudantonError(
+			throw new LudantonError(
 				LudantonError.Code.SOURCE_UNSUPPORTED,
 				LudantonError.Category.INPUT,
 				src,
-			));
-			return false;
+			);
 		}
 
 		this._corePlayer.setSource(optimalSource);
@@ -114,9 +114,11 @@ class Player extends EventTarget {
 	}
 
 	_dispatchError(error) {
-		this.dispatchEvent(new CustomEvent(Player.Event.ERROR, {
-			detail: error,
-		}));
+		const event = createEvent(NativePlayer.Event.ERROR, error);
+
+		this.dispatchEvent(event);
+
+		return event;
 	}
 }
 
