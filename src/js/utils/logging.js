@@ -61,6 +61,10 @@ Logger.prototype.trace = function(msg, args = null) {
 };
 
 
+logging.getLoggerByClass = function(klass) {
+	return logging.getLogger(klass.constructor.name);
+};
+
 logging.LevelFilter = class LevelFilter extends Filter {
 	constructor(level) {
 		super();
@@ -104,26 +108,33 @@ logging.config({
 		},
 		trace: {
 			class: 'logging.StylishConsoleFormatter',
-			format: '%(name)s%(message)s%(args)o',
+			format: '%(message)s%(args)o',
 			styles: {
 				name: {
 					'*': {
-						'padding': '1px 5px;',
-						'background-color': '#333;',
-						'color': '#fff;',
+						'margin': '0;',
+						'border': '0;',
+						'padding': '1px 0;',
+						// 'font-family': 'monospace;',
+						// 'background-color': '#333;',
+						// 'color': '#fff;',
+						// 'text-transform': 'uppercase;',
+						'font-weight': 'bold;',
+						// 'background-color': '#cb2027;',
+						'color': '#000;',
 						'border-radius': '4px;',
 					},
 				},
 				message: {
 					'^#.+': {
-						'padding': '1px 5px;',
+						'padding': '1px 0;',
 						'background-color': '#FF9009;',
 						'color': '#fff;',
 						'border-radius': '4px;',
 					},
 					'^@.+': {
-						'padding': '1px 5px;',
-						'background-color': '#ff5700;',
+						'padding': '1px 0;',
+						'background-color': '#cb2027;',
 						'color': '#fff;',
 						'border-radius': '4px;',
 					},
@@ -152,7 +163,7 @@ logging.config({
 		console_trace: {
 			class: 'logging.ConsoleHandler',
 			level: 'TRACE',
-			grouping: false,
+			// grouping: false,
 			formatter: 'trace',
 			filters: ['trace'],
 		},

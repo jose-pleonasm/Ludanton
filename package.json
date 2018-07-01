@@ -8,7 +8,7 @@
     "dev": "NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
     "build": "npm run transform && npm run browserify",
     "transform": "babel src/js --out-dir dist --source-map",
-    "browserify": "browserify dist/index.js --standalone Ludanton > dist/ludanton.js"
+    "browserify": "browserify dist/dev.js --standalone Ludanton > dist/ludanton.js"
   },
   "repository": {
     "type": "git",

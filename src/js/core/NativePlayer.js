@@ -8,6 +8,18 @@ import logging from '../utils/logging.js';
 const logger = logging.getLogger('NativePlayer');
 
 class NativePlayer extends EventTarget {
+	static _getVideo() {
+		if (!NativePlayer._video) {
+			NativePlayer._video = window.document.createElement('video');
+		}
+
+		return NativePlayer._video;
+	}
+
+	static canPlaySource(source) {
+		return NativePlayer._getVideo().canPlayType(source.type);
+	}
+
 	constructor(element) {
 		super();
 
@@ -17,21 +29,29 @@ class NativePlayer extends EventTarget {
 		this._element = element;
 
 		/**
-		 * @type {Source}
+		 * @type {(Source|null)}
 		 */
 		this._source = null;
 
 		/**
-		 * @type {EventManager}
+		 * @type {Array<[string, Function]>}
 		 */
-		this._eventManager = new EventManager([
+		this._eventMap = [
 			['play', this._handlePlay],
 			['playing', this._handlePlaying],
 			['loadedmetadata', this._handleLoadedmetadata],
 			['timeupdate', this._handleTimeupdate],
 			['canplaythrough', this._handleCanplaythrough],
 			['error', this._handleError],
-		], this);
+		].map(
+			(item) => [item[0], item[1].bind(this)],
+			this,
+		);
+
+		/**
+		 * @type {EventManager}
+		 */
+		this._eventManager = new EventManager(this._eventMap);
 
 		this._playPromise = null;
 		this._playResolve = null;
@@ -41,20 +61,33 @@ class NativePlayer extends EventTarget {
 	}
 
 	setSource(source) {
+		logger.trace('#setSource', source);
+
 		this._rejectPlayPromise();
 
 		this._source = source;
-		this._element.src = source.src;
+
 		this._eventManager.listen(this._element, 'loadedmetadata');
 		this._eventManager.listen(this._element, 'play');
 		this._eventManager.listen(this._element, 'playing');
 		this._eventManager.listen(this._element, 'timeupdate');
 		this._eventManager.listen(this._element, 'canplaythrough');
+
+		this._element.src = source.src;
 	}
 
 	resetSource() {
-		this._source = null;
+		logger.trace('#resetSource');
+
 		this._rejectPlayPromise();
+		this._eventManager.unlisten(this._element, 'loadedmetadata');
+		this._eventManager.unlisten(this._element, 'play');
+		this._eventManager.unlisten(this._element, 'playing');
+		this._eventManager.unlisten(this._element, 'timeupdate');
+		this._eventManager.unlisten(this._element, 'canplaythrough');
+
+		this._source = null;
+
 		this._element.removeAttribute('src');
 		try {
 			this._element.load();
@@ -63,10 +96,14 @@ class NativePlayer extends EventTarget {
 	}
 
 	load() {
+		logger.trace('#load');
+
 		this._element.load();
 	}
 
 	play() {
+		logger.trace('#play');
+
 		this._playPromise = this._element.play();
 
 		if (!this._playPromise) {
@@ -80,14 +117,20 @@ class NativePlayer extends EventTarget {
 	}
 
 	pause() {
+		logger.trace('#pause');
+
 		this._element.pause();
 	}
 
 	reset() {
+		logger.trace('#reset');
+
 		this.resetSource();
 	}
 
 	_resolvePlayPromise() {
+		logger.trace('#_resolvePlayPromise');
+
 		if (this._playResolve) {
 			this._playResolve();
 			this._playResolve = null;
@@ -126,7 +169,15 @@ class NativePlayer extends EventTarget {
 
 	_handleError(event) {
 		logger.trace(event);
+
+		const mediaError = event.target.error;
+
+		if (mediaError.code === MediaError.MEDIA_ERR_ABORTED) {
+			return;
+		}
 	}
 }
+
+NativePlayer._video = null;
 
 export default NativePlayer;

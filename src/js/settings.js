@@ -10,3 +10,5 @@ export const EXT_TYPE_MAP = Object.freeze({
 	'm3u': 'application/vnd.apple.mpegurl',
 	'm3u8': 'application/vnd.apple.mpegurl',
 });
+
+export const RESOLUTION_FACTOR = 1.15;

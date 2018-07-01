@@ -18,15 +18,44 @@
 
 'use strict';
 
+const Player = Ludanton.default.Player;
 //const player = document.getElementById('button');
 const element = document.querySelector('#video');
-const player = new Ludanton.default.Player(element);
+const player = new Player(element);
+
+player.addEventListener(Player.Event.ERROR, event => {
+	console.error(event.detail);
+});
 
 player.setSource(
-	'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4'
+	'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.m3u'
 );
+/*player.setSource([
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '720p'
+	},
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_lq.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '360p'
+	},
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_4k.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '2160p'
+	},
+]);*/
 player.play();
-
+/*
+setTimeout(() => {
+	player.setSource(
+		'https://storage.googleapis.com/coverr-main/mp4/Fishermans-Village.mp4'
+	);
+}, 5e3);
+*/
 	</script>
+	<a href="./test.html">Link</a>
 </body>
 </html>

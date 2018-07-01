@@ -59,21 +59,29 @@ class LudantonError extends Error {
 /**
  * @enum {string}
  */
-LudantonError.Code = {
+LudantonError.Code = Object.freeze({
 	/**
 	 * {string} error.data[0] URI
 	 * {string} error.data[1] HTTP status
 	 */
-	'BAD_HTTP_STATUS': 'BAD_HTTP_STATUS',
-};
+	'HTTP_STATUS_BAD': 'HTTP_STATUS_BAD',
+
+	/**
+	 * {(MediaUrl|MediaObject|Array<MediaObject>)} error.data[0] source
+	 */
+	'SOURCE_UNSUPPORTED': 'SOURCE_UNSUPPORTED',
+});
 
 /**
  * @enum {string}
  */
-LudantonError.Category = {
+LudantonError.Category = Object.freeze({
 	/** Miscellaneous errors. */
 	'GENERAL': 'GENERAL',
-};
+
+	/** Input errors. */
+	'INPUT': 'INPUT',
+});
 
 
 export default LudantonError;
