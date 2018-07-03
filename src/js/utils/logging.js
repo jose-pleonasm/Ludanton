@@ -151,6 +151,15 @@ logging.config({
 			class: 'logging.ExceptLevelFilter',
 			level: 'TRACE',
 		},
+		remove_channel: {
+			class: 'logging.Transformer',
+			config: { rules: [
+				{ property: 'name', operation: function(value) {
+					var parts = value.split('.');
+					return parts.splice(1).join('.');
+				} }
+			] },
+		},
 	},
 	handlers: {
 		console: {
@@ -167,11 +176,28 @@ logging.config({
 			formatter: 'trace',
 			filters: ['trace'],
 		},
+		'console:channel': {
+			class: 'logging.ConsoleHandler',
+			level: 'DEBUG',
+			grouping: false,
+			formatter: 'stylish',
+			filters: ['trace_less', 'remove_channel'],
+		},
+		'console_trace:channel': {
+			class: 'logging.ConsoleHandler',
+			level: 'TRACE',
+			// grouping: false,
+			formatter: 'trace',
+			filters: ['trace', 'remove_channel'],
+		},
 	},
 	loggers: {
 		'': {
+			handlers: [],
+		},
+		'channel:console': {
 			level: 'DEBUG',
-			handlers: ['console', 'console_trace'],
+			handlers: ['console:channel', 'console_trace:channel'],
 		},
 	},
 });

@@ -9,7 +9,7 @@ import { RESOLUTION_FACTOR } from './settings.js';
 import logging from './utils/logging.js';
 
 
-const logger = logging.getLogger('Player');
+const logger = logging.getLogger('channel:console.Player');
 
 /**
  * Player

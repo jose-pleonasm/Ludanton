@@ -6,7 +6,7 @@ import createEvent from '../utils/createEvent.js';
 import logging from '../utils/logging.js';
 
 
-const logger = logging.getLogger('NativePlayer');
+const logger = logging.getLogger('channel:console.NativePlayer');
 
 /**
  * NativePlayer.
