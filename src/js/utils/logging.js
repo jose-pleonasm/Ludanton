@@ -176,14 +176,14 @@ logging.config({
 			formatter: 'trace',
 			filters: ['trace'],
 		},
-		'console:channel': {
+		'main:console': {
 			class: 'logging.ConsoleHandler',
 			level: 'DEBUG',
 			grouping: false,
 			formatter: 'stylish',
 			filters: ['trace_less', 'remove_channel'],
 		},
-		'console_trace:channel': {
+		'main:console_trace': {
 			class: 'logging.ConsoleHandler',
 			level: 'TRACE',
 			// grouping: false,
@@ -195,9 +195,9 @@ logging.config({
 		'': {
 			handlers: [],
 		},
-		'channel:console': {
+		'channel:main': {
 			level: 'DEBUG',
-			handlers: ['console:channel', 'console_trace:channel'],
+			handlers: ['main:console', 'main:console_trace'],
 		},
 	},
 });
