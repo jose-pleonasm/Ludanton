@@ -1,8 +1,7 @@
-/* global logging:Object, commonkit:Object, py_logging_browserkit:Object */
 'use strict';
-// import logging from 'py-logging';
-// import commonkit from 'py-logging/commonkit';
-// import py_logging_browserkit from 'py-logging-browserkit';
+import logging from 'py-logging';
+import commonkit from 'py-logging/commonkit';
+import py_logging_browserkit from 'py-logging-browserkit';
 
 
 const Logger = logging.getLoggerClass();
@@ -89,6 +88,15 @@ logging.ExceptLevelFilter = class ExceptLevelFilter extends Filter {
 	}
 };
 
+logging.ChannelRemover = class ChannelRemover extends Filter {
+	filter(record) {
+		var parts = record.name.split('.');
+
+		record.name = parts.splice(1).join('.')
+		return true;
+	}
+};
+
 
 commonkit.install(logging);
 py_logging_browserkit.install(logging);
@@ -152,13 +160,7 @@ logging.config({
 			level: 'TRACE',
 		},
 		remove_channel: {
-			class: 'logging.Transformer',
-			config: { rules: [
-				{ property: 'name', operation: function(value) {
-					var parts = value.split('.');
-					return parts.splice(1).join('.');
-				} }
-			] },
+			class: 'logging.ChannelRemover',
 		},
 	},
 	handlers: {

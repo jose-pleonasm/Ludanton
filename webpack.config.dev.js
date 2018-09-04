@@ -20,21 +20,6 @@ module.exports = {
 		// libraryExport: 'default',
 		library: 'Ludanton'
 	},
-	externals: [{
-		'py-logging': {
-			commonjs: 'py-logging',
-			commonjs2: 'py-logging',
-			amd: 'py-logging',
-			root: 'logging'
-		},
-	}, {
-		'py-logging-browserkit': {
-			commonjs: 'py-logging-browserkit',
-			commonjs2: 'py-logging-browserkit',
-			amd: 'py-logging-browserkit',
-			root: 'py_logging_browserkit'
-		},
-	}],
 	module: {
 		rules: [
 			{
