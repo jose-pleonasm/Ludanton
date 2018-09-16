@@ -4,10 +4,7 @@ import EventTarget from '../utils/EventTarget.js';
 import EventManager from '../utils/EventManager.js';
 import createEvent from '../utils/createEvent.js';
 import { generateId } from '../utils/general.js';
-import logging from '../utils/logging.js';
 
-
-const logger = logging.getLogger('channel:main.NativePlayer');
 
 /**
  * NativePlayer.
@@ -55,11 +52,25 @@ class NativePlayer extends EventTarget {
 		 * @type {Array<Array<string, Function>>}
 		 */
 		this._eventMap = [
+			['volumechange', this._handleVolumechange],
+			['durationchange', this._handleDurationchange],
+			['loadedmetadata', this._handleLoadedmetadata],
+			['loadeddata', this._handleLoadeddata],
+			['loadstart', this._handleLoadstart],
+			['loadend', this._handleLoadend],
+			['progress', this._handleProgress],
+			['canplay', this._handleCanplay],
+			['canplaythrough', this._handleCanplaythrough],
 			['play', this._handlePlay],
 			['playing', this._handlePlaying],
-			['loadedmetadata', this._handleLoadedmetadata],
+			['pause', this._handlePause],
 			['timeupdate', this._handleTimeupdate],
-			['canplaythrough', this._handleCanplaythrough],
+			['seeking', this._handleSeeking],
+			['seeked', this._handleSeeked],
+			['emptied', this._handleEmptied],
+			['stalled', this._handleStalled],
+			['suspend', this._handleSuspend],
+			['waiting', this._handleWaiting],
 			['error', this._handleError],
 		].map(
 			(item) => [item[0], item[1].bind(this)],
@@ -91,7 +102,16 @@ class NativePlayer extends EventTarget {
 		 */
 		this._destroyed = false;
 
+		/**
+		 * @type {(Object|null)}
+		 */
+		this._logger = null;
 
+
+		this._eventManager.listen(this._element, 'volumechange');
+		this._eventManager.listen(this._element, 'emptied');
+		this._eventManager.listen(this._element, 'stalled');
+		this._eventManager.listen(this._element, 'suspend');
 		this._eventManager.listen(this._element, 'error');
 	}
 
@@ -111,7 +131,20 @@ class NativePlayer extends EventTarget {
 	}
 
 	toString() {
-		return `[object ${this.constructor.name} #${this._id}]`;
+		return `[object ${this.constructor.name}#${this._id}]`;
+	}
+
+	setLogger(logger) {
+		this._logger = logger;
+	}
+
+	/**
+	 * Returns associated video element.
+	 *
+	 * @return {HTMLVideoElement}
+	 */
+	getElement() {
+		return this._element;
 	}
 
 	/**
@@ -122,38 +155,136 @@ class NativePlayer extends EventTarget {
 	}
 
 	/**
+	 * @return {string} URI
+	 */
+	getCurrentSrc() {
+		if (!this._source) {
+			return '';
+		}
+
+		return this._element.currentSrc;
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getVideoWidth() {
+		return this._element.videoWidth;
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getVideoHeight() {
+		return this._element.videoHeight;
+	}
+
+	/**
+	 * @return {number} 0 - 1
+	 */
+	getVolume() {
+		return this._element.volume;
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getCurrentTime() {
+		return this._element.currentTime;
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getDuration() {
+		return this._element.duration;
+	}
+
+	/**
+	 * @return {boolean}
+	 */
+	isReady() {
+		return true;
+	}
+
+	/**
+	 * @return {boolean}
+	 */
+	isMuted() {
+		return this._element.muted;
+	}
+
+	/**
+	 * @return {boolean}
+	 */
+	isPaused() {
+		return this._element.paused;
+	}
+
+	isSeeking() {
+		return this._element.seeking;
+	}
+
+	isEnded() {
+		return this._element.ended;
+	}
+
+	/**
 	 * @param {Source} source
 	 */
 	setSource(source) {
-		logger.trace('#setSource', source);
+		if (this._logger) {
+			this._logger.trace('#setSource', [source]);
+		}
 
 		this._rejectPlayPromise();
 
 		this._source = source;
 
+		this._eventManager.listen(this._element, 'durationchange');
 		this._eventManager.listen(this._element, 'loadedmetadata');
+		this._eventManager.listen(this._element, 'loadeddata');
+		this._eventManager.listen(this._element, 'loadstart');
+		this._eventManager.listen(this._element, 'loadend');
+		this._eventManager.listen(this._element, 'progress');
+		this._eventManager.listen(this._element, 'canplay');
+		this._eventManager.listen(this._element, 'canplaythrough');
 		this._eventManager.listen(this._element, 'play');
 		this._eventManager.listen(this._element, 'playing');
+		this._eventManager.listen(this._element, 'pause');
 		this._eventManager.listen(this._element, 'timeupdate');
-		this._eventManager.listen(this._element, 'canplaythrough');
+		this._eventManager.listen(this._element, 'seeking');
+		this._eventManager.listen(this._element, 'seeked');
+		this._eventManager.listen(this._element, 'waiting');
 
 		this._element.src = source.src;
 	}
-
 
 	/**
 	 * Reset the source.
 	 * Removes listeners, removes src attribute etc.
 	 */
 	resetSource() {
-		logger.trace('#resetSource');
+		if (this._logger) {
+			this._logger.trace('#resetSource');
+		}
 
 		this._rejectPlayPromise();
+		this._eventManager.unlisten(this._element, 'durationchange');
 		this._eventManager.unlisten(this._element, 'loadedmetadata');
+		this._eventManager.unlisten(this._element, 'loadeddata');
+		this._eventManager.unlisten(this._element, 'loadstart');
+		this._eventManager.unlisten(this._element, 'loadend');
+		this._eventManager.unlisten(this._element, 'progress');
+		this._eventManager.unlisten(this._element, 'canplay');
+		this._eventManager.unlisten(this._element, 'canplaythrough');
 		this._eventManager.unlisten(this._element, 'play');
 		this._eventManager.unlisten(this._element, 'playing');
+		this._eventManager.unlisten(this._element, 'pause');
 		this._eventManager.unlisten(this._element, 'timeupdate');
-		this._eventManager.unlisten(this._element, 'canplaythrough');
+		this._eventManager.unlisten(this._element, 'seeking');
+		this._eventManager.unlisten(this._element, 'seeked');
+		this._eventManager.unlisten(this._element, 'waiting');
 
 		this._source = null;
 
@@ -170,7 +301,9 @@ class NativePlayer extends EventTarget {
 	 * Load.
 	 */
 	load() {
-		logger.trace('#load');
+		if (this._logger) {
+			this._logger.trace('#load');
+		}
 
 		this._element.load();
 	}
@@ -181,7 +314,9 @@ class NativePlayer extends EventTarget {
 	 * @return {Promise}
 	 */
 	play() {
-		logger.trace('#play');
+		if (this._logger) {
+			this._logger.trace('#play');
+		}
 
 		this._playPromise = this._element.play();
 
@@ -199,25 +334,63 @@ class NativePlayer extends EventTarget {
 	 * Pause.
 	 */
 	pause() {
-		logger.trace('#pause');
+		if (this._logger) {
+			this._logger.trace('#pause');
+		}
 
 		this._element.pause();
+	}
+
+	/**
+	 * @param {number} level 0 - 1
+	 */
+	setVolume(level) {
+		if (this._logger) {
+			this._logger.trace('#setVolume', [level]);
+		}
+
+		this._element.volume = level;
+	}
+
+	/**
+	 * @param {boolean} on
+	 */
+	setMute(on) {
+		if (this._logger) {
+			this._logger.trace('#setMute', [on]);
+		}
+
+		this._element.muted = !!on;
+	}
+
+	/**
+	 * @param {number} time
+	 */
+	seek(time) {
+		if (this._logger) {
+			this._logger.trace('#seek', [time]);
+		}
+
+		this._element.currentTime = time;
 	}
 
 	/**
 	 * Reset.
 	 */
 	reset() {
-		logger.trace('#reset');
+		if (this._logger) {
+			this._logger.trace('#reset');
+		}
 
 		this.resetSource();
 	}
 
 	_resolvePlayPromise() {
-		logger.trace('#_resolvePlayPromise');
+		if (this._logger) {
+			this._logger.trace('#_resolvePlayPromise');
+		}
 
 		if (this._playResolve) {
-			logger.trace('playResolve');
 			this._playResolve();
 			this._playResolve = null;
 			this._playReject = null;
@@ -225,35 +398,212 @@ class NativePlayer extends EventTarget {
 	}
 
 	_rejectPlayPromise() {
-		logger.trace('#_rejectPlayPromise');
+		if (this._logger) {
+			this._logger.trace('#_rejectPlayPromise');
+		}
 
 		if (this._playReject) {
-			logger.trace('playReject');
 			this._playReject();
 			this._playReject = null;
 			this._playResolve = null;
 		}
 	}
 
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleVolumechange(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+
+		const e = createEvent(NativePlayer.Event.VOLUME_CHANGE, {
+			muted: this._element.muted,
+			level: this._element.volume,
+		});
+		this.dispatchEvent(e);
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleDurationchange(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
 	_handleLoadedmetadata(event) {
-		logger.trace(`@${event.type}`, event);
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
 	}
 
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleLoadeddata(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleLoadstart(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleLoadend(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleProgress(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleCanplay(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleCanplaythrough(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
 	_handlePlay(event) {
-		logger.trace(`@${event.type}`, event);
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
 	}
 
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
 	_handlePlaying(event) {
-		logger.trace(`@${event.type}`, event);
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
 		this._resolvePlayPromise();
 	}
 
-	_handleTimeupdate(event) {
-		logger.trace(`@${event.type}`, event);
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handlePause(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
 	}
 
-	_handleCanplaythrough(event) {
-		logger.trace(`@${event.type}`, event);
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleTimeupdate(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleSeeking(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleSeeked(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleEmptied(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleStalled(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleSuspend(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
+	}
+
+	/**
+	 * @private
+	 * @param  {Event} event
+	 */
+	_handleWaiting(event) {
+		if (this._logger) {
+			this._logger.trace(`@${event.type}`, event);
+		}
 	}
 
 	/**
@@ -262,7 +612,9 @@ class NativePlayer extends EventTarget {
 	 * @param  {Event} event
 	 */
 	_handleError(event) {
-		logger.trace(event);
+		if (this._logger) {
+			this._logger.trace('#_handleError', [event]);
+		}
 
 		const mediaError = event.target.error;
 
@@ -292,6 +644,7 @@ class NativePlayer extends EventTarget {
 }
 
 NativePlayer.Event = Object.freeze({
+	VOLUME_CHANGE: 'volumechange',
 	ERROR: 'error',
 	DESTROYING: 'destroying',
 });

@@ -10,7 +10,7 @@ import '../core/Source.js';
  */
 export default (msd) => {
 	if (!msd) {
-		throw new Error('Argument 0 of createSource is not valid.');
+		throw new TypeError('Argument 0 of createSource is not valid.');
 	}
 	let sources = null;
 
@@ -18,21 +18,21 @@ export default (msd) => {
 		const type = getTypeByFilename(msd);
 
 		if (!type) {
-			throw new Error('Argument 0 of createSource has unknown type.');
+			throw new TypeError('Argument 0 of createSource has unknown type.');
 		}
 
 		sources = [{ type, src: msd }];
 
 	} else if (Array.isArray(msd)) {
 		if (!msd.every(item => item.src && item.type)) {
-			throw new Error('Argument 0 of createSource is not valid.');
+			throw new TypeError('Argument 0 of createSource is not valid.');
 		}
 
 		sources = msd.map(item => ({ ...item }));
 
 	} else {
 		if (!msd.src || !msd.type) {
-			throw new Error('Argument 0 of createSource is not valid.');
+			throw new TypeError('Argument 0 of createSource is not valid.');
 		}
 
 		sources = [{ ...msd }];

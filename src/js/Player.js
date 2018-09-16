@@ -1,11 +1,12 @@
 'use strict';
+import { RESOLUTION_FACTOR } from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
 import env from './utils/env.js';
 import createSource from './utils/createSource.js';
 import createEvent from './utils/createEvent.js';
+import EventManager from './utils/EventManager.js';
 import NativePlayer from './core/NativePlayer.js';
-import { RESOLUTION_FACTOR } from './settings.js';
 import logging from './utils/logging.js';
 
 
@@ -20,12 +21,33 @@ class Player extends EventTarget {
 	 */
 	constructor(element) {
 		super();
+		this._source = null;
 
 		this._corePlayer = new NativePlayer(element);
 
 		this._options = {
 			screenResolution: env.getScreenResolution(),
 		};
+
+		/**
+		 * @type {Array<Array<string, Function>>}
+		 */
+		this._eventMap = [
+			[NativePlayer.Event.VOLUME_CHANGE, this._handleEvent],
+		].map(
+			(item) => [item[0], item[1].bind(this)],
+			this,
+		);
+
+		/**
+		 * @type {EventManager}
+		 */
+		this._eventManager = new EventManager(this._eventMap);
+
+		this._corePlayer.setLogger(
+			logging.getLogger('channel:main.NativePlayer')
+		);
+		this._eventManager.listen(this._corePlayer, NativePlayer.Event.VOLUME_CHANGE);
 	}
 
 	/**
@@ -111,6 +133,14 @@ class Player extends EventTarget {
 				return resSources[i];
 			}
 		}
+	}
+
+	/**
+	 * @private
+	 * @param  {CustomEvent} event
+	 */
+	_handleEvent(event) {
+		logger.trace('#_handleEvent', [event]);
 	}
 
 	_dispatchError(error) {
