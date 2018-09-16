@@ -12,3 +12,15 @@ export const EXT_TYPE_MAP = Object.freeze({
 });
 
 export const RESOLUTION_FACTOR = 1.15;
+
+export const NS = (() => {
+	if (typeof window !== 'undefined' && window && window.location) {
+		return window.location.host.replace(/[^\w-\.]/g, '_');
+
+	} else if (typeof process !== 'undefined' && process && process.pid) {
+		return String(process.pid);
+
+	} else {
+		return 'ns';
+	}
+})();

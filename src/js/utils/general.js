@@ -1,8 +1,9 @@
 'use strict';
-import { EXT_TYPE_MAP } from '../settings.js';
+import { EXT_TYPE_MAP, NS } from '../settings.js';
 
 
 const QUALITY_DESCRIPTOR_PATTERN = /([0-9]+)(p)/i;
+let counter = 0;
 
 /**
  * getTypeByFilename.
@@ -37,6 +38,17 @@ export const parseQualityDescriptor = (descriptor) => {
 		height: Number(result[1]),
 		unit: 'px',
 	};
+};
+
+/**
+ * generateId.
+ * @param  {string} [namespace]
+ * @return {string}
+ */
+export const generateId = (namespace = NS) => {
+	counter = counter < Number.MAX_SAFE_INTEGER ? counter : 0;
+
+	return `${namespace}-${Date.now()}-${counter++}`;
 };
 
 

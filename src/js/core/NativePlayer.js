@@ -3,6 +3,7 @@ import LudantonError from '../utils/Error.js';
 import EventTarget from '../utils/EventTarget.js';
 import EventManager from '../utils/EventManager.js';
 import createEvent from '../utils/createEvent.js';
+import { generateId } from '../utils/general.js';
 import logging from '../utils/logging.js';
 
 
@@ -39,6 +40,11 @@ class NativePlayer extends EventTarget {
 		 * @type {HTMLVideoElement}
 		 */
 		this._element = element;
+
+		/**
+		 * @type {string}
+		 */
+		this._id = generateId();
 
 		/**
 		 * @type {(Source|null)}
@@ -80,8 +86,32 @@ class NativePlayer extends EventTarget {
 		 */
 		this._playReject = null;
 
+		/**
+		 * @type {boolean}
+		 */
+		this._destroyed = false;
+
 
 		this._eventManager.listen(this._element, 'error');
+	}
+
+	/**
+	 * Destructor.
+	 *
+	 * After destruction, a NativePlayer instance cannot be used again.
+	 */
+	destroy() {
+		const event = createEvent(NativePlayer.Event.DESTROYING);
+		this.dispatchEvent(event);
+
+		this._rejectPlayPromise();
+		this._eventManager.clear();
+		this._destroyed = true;
+		this._element = null;
+	}
+
+	toString() {
+		return `[object ${this.constructor.name} #${this._id}]`;
 	}
 
 	/**
@@ -131,7 +161,9 @@ class NativePlayer extends EventTarget {
 		try {
 			this._element.load();
 		}
-		catch (error) {}
+		catch (error) {
+			// empty
+		}
 	}
 
 	/**
@@ -261,6 +293,7 @@ class NativePlayer extends EventTarget {
 
 NativePlayer.Event = Object.freeze({
 	ERROR: 'error',
+	DESTROYING: 'destroying',
 });
 
 NativePlayer._video = null;

@@ -135,13 +135,14 @@ logging.config({
 				},
 				message: {
 					'^#.+': {
-						'padding': '1px 0;',
-						'background-color': '#FF9009;',
+						'padding': '1px 2px;',
+						// 'background-color': '#FF9009;',
+						'background-color': '#4eb980;',
 						'color': '#fff;',
 						'border-radius': '4px;',
 					},
 					'^@.+': {
-						'padding': '1px 0;',
+						'padding': '1px 2px;',
 						'background-color': '#cb2027;',
 						'color': '#fff;',
 						'border-radius': '4px;',
