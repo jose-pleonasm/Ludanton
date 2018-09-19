@@ -5,7 +5,6 @@ import EventTarget from './utils/EventTarget.js';
 import env from './utils/env.js';
 import createSource from './utils/createSource.js';
 import createEvent from './utils/createEvent.js';
-import EventManager from './utils/EventManager.js';
 import NativePlayer from './core/NativePlayer.js';
 import logging from './utils/logging.js';
 
@@ -21,39 +20,20 @@ class Player extends EventTarget {
 	 */
 	constructor(element) {
 		super();
+
 		this._source = null;
 
-		this._corePlayer = new NativePlayer(element);
+		this._handleEvent = this._handleEvent.bind(this);
+
+		this._corePlayer = new NativePlayer(element, this._handleEvent);
 
 		this._options = {
 			screenResolution: env.getScreenResolution(),
 		};
 
-		/**
-		 * @type {Array<Array<string, Function>>}
-		 */
-		this._eventMap = [
-			[NativePlayer.Event.VOLUMECHANGE, this._handleEvent],
-			[NativePlayer.Event.DURATIONCHANGE, this._handleEvent],
-			[NativePlayer.Event.PLAY, this._handleEvent],
-			[NativePlayer.Event.PLAYING, this._handleEvent],
-		].map(
-			(item) => [item[0], item[1].bind(this)],
-			this,
-		);
-
-		/**
-		 * @type {EventManager}
-		 */
-		this._eventManager = new EventManager(this._eventMap);
-
 		this._corePlayer.setLogger(
 			logging.getLogger('channel:main.NativePlayer')
 		);
-		this._eventManager.listen(this._corePlayer, NativePlayer.Event.VOLUMECHANGE);
-		this._eventManager.listen(this._corePlayer, NativePlayer.Event.DURATIONCHANGE);
-		this._eventManager.listen(this._corePlayer, NativePlayer.Event.PLAY);
-		this._eventManager.listen(this._corePlayer, NativePlayer.Event.PLAYING);
 	}
 
 	/**
@@ -143,10 +123,18 @@ class Player extends EventTarget {
 
 	/**
 	 * @private
-	 * @param  {CustomEvent} event
+	 * @param  {string} eventName
 	 */
-	_handleEvent(event) {
-		logger.trace('#_handleEvent', [event]);
+	_handleEvent(eventName) {
+		const type = Player.Event[eventName.toUpperCase()];
+		const detail = {};
+
+		switch (type) {
+			case Player.Event.PLAYING:
+				detail.time = this._corePlayer.getCurrentTime();
+		}
+
+		this.dispatchEvent(new CustomEvent(type, { detail }));
 	}
 
 	_dispatchError(error) {
@@ -164,6 +152,27 @@ class Player extends EventTarget {
  * @enum {string}
  */
 const EVENT = {
+	VOLUMECHANGE: 'volumechange',
+	DURATIONCHANGE: 'durationchange',
+	LOADEDMETADATA: 'loadedmetadata',
+	LOADEDDATA: 'loadeddata',
+	LOADSTART: 'loadstart',
+	LOADEND: 'loadend',
+	PROGRESS: 'progress',
+	CANPLAY: 'canplay',
+	canplaythrough: 'canplaythrough',
+	PLAY: 'play',
+	PLAYING: 'playing',
+	PAUSE: 'pause',
+	TIMEUPDATE: 'timeupdate',
+	SEEKING: 'seeking',
+	SEEKED: 'seeked',
+	EMPTIED: 'emptied',
+	STALLED: 'stalled',
+	SUSPEND: 'suspend',
+	WAITING: 'waiting',
+	DESTROYING: 'destroying',
+
 	/**
 	 * @event Player#error
 	 * @type {CustomEvent}

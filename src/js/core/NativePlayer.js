@@ -29,14 +29,20 @@ class NativePlayer extends EventTarget {
 
 	/**
 	 * @param  {HTMLVideoElement} element
+	 * @param  {Function} eventHandler
 	 */
-	constructor(element) {
+	constructor(element, eventHandler) {
 		super();
 
 		/**
 		 * @type {HTMLVideoElement}
 		 */
 		this._element = element;
+
+		/**
+		 * @type {Function}
+		 */
+		this._emit = eventHandler;
 
 		/**
 		 * @type {string}
@@ -52,25 +58,25 @@ class NativePlayer extends EventTarget {
 		 * @type {Array<Array<string, Function>>}
 		 */
 		this._eventMap = [
-			['volumechange', this._handleVolumechange],
-			['durationchange', this._handleDurationchange],
-			['loadedmetadata', this._handleLoadedmetadata],
-			['loadeddata', this._handleLoadeddata],
-			['loadstart', this._handleLoadstart],
-			['loadend', this._handleLoadend],
-			['progress', this._handleProgress],
-			['canplay', this._handleCanplay],
-			['canplaythrough', this._handleCanplaythrough],
-			['play', this._handlePlay],
-			['playing', this._handlePlaying],
-			['pause', this._handlePause],
-			['timeupdate', this._handleTimeupdate],
-			['seeking', this._handleSeeking],
-			['seeked', this._handleSeeked],
-			['emptied', this._handleEmptied],
-			['stalled', this._handleStalled],
-			['suspend', this._handleSuspend],
-			['waiting', this._handleWaiting],
+			['volumechange', this._handleEvent],
+			['durationchange', this._handleEvent],
+			['loadedmetadata', this._handleEvent],
+			['loadeddata', this._handleEvent],
+			['loadstart', this._handleEvent],
+			['loadend', this._handleEvent],
+			['progress', this._handleEvent],
+			['canplay', this._handleEvent],
+			['canplaythrough', this._handleEvent],
+			['play', this._handleEvent],
+			['playing', this._handleEvent],
+			['pause', this._handleEvent],
+			['timeupdate', this._handleEvent],
+			['seeking', this._handleEvent],
+			['seeked', this._handleEvent],
+			['emptied', this._handleEvent],
+			['stalled', this._handleEvent],
+			['suspend', this._handleEvent],
+			['waiting', this._handleEvent],
 			['error', this._handleError],
 		].map(
 			(item) => [item[0], item[1].bind(this)],
@@ -413,213 +419,225 @@ class NativePlayer extends EventTarget {
 	 * @private
 	 * @param  {Event} event
 	 */
-	_handleVolumechange(event) {
+	_handleEvent(event) {
 		if (this._logger) {
 			this._logger.trace(`@${event.type}`, event);
 		}
 
-		const e = createEvent(NativePlayer.Event.VOLUMECHANGE, {
-			muted: this.isMuted(),
-			level: this.getVolume(),
-		});
-		this.dispatchEvent(e);
+		this._emit(event.type);
 	}
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleDurationchange(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleVolumechange(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
 
-		const e = createEvent(NativePlayer.Event.DURATIONCHANGE, {
-			duration: this.getDuration(),
-		});
-		this.dispatchEvent(e);
-	}
+	// 	const e = createEvent(NativePlayer.Event.VOLUMECHANGE, {
+	// 		muted: this.isMuted(),
+	// 		level: this.getVolume(),
+	// 	});
+	// 	this.dispatchEvent(e);
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleLoadedmetadata(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleDurationchange(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleLoadeddata(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// 	const e = createEvent(NativePlayer.Event.DURATIONCHANGE, {
+	// 		duration: this.getDuration(),
+	// 	});
+	// 	this.dispatchEvent(e);
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleLoadstart(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleLoadedmetadata(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleLoadend(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleLoadeddata(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleProgress(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleLoadstart(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleCanplay(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleLoadend(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleCanplaythrough(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleProgress(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handlePlay(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleCanplay(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-		const e = createEvent(NativePlayer.Event.PLAY, {
-			time: this.getCurrentTime(),
-		});
-		this.dispatchEvent(e);
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleCanplaythrough(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handlePlaying(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-		this._resolvePlayPromise();
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handlePlay(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
 
-		const e = createEvent(NativePlayer.Event.PLAYING, {
-			time: this.getCurrentTime(),
-		});
-		this.dispatchEvent(e);
-	}
+	// 	const e = createEvent(NativePlayer.Event.PLAY, {
+	// 		time: this.getCurrentTime(),
+	// 	});
+	// 	this.dispatchEvent(e);
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handlePause(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handlePlaying(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// 	this._resolvePlayPromise();
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleTimeupdate(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// 	const e = createEvent(NativePlayer.Event.PLAYING, {
+	// 		time: this.getCurrentTime(),
+	// 	});
+	// 	this.dispatchEvent(e);
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleSeeking(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handlePause(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleSeeked(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleTimeupdate(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleEmptied(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleSeeking(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleStalled(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleSeeked(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleSuspend(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleEmptied(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
-	/**
-	 * @private
-	 * @param  {Event} event
-	 */
-	_handleWaiting(event) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-	}
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleStalled(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
+
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleSuspend(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
+
+	// /**
+	//  * @private
+	//  * @param  {Event} event
+	//  */
+	// _handleWaiting(event) {
+	// 	if (this._logger) {
+	// 		this._logger.trace(`@${event.type}`, event);
+	// 	}
+	// }
 
 	/**
 	 * Handles error event.
@@ -656,30 +674,6 @@ class NativePlayer extends EventTarget {
 		return event;
 	}
 }
-
-NativePlayer.Event = Object.freeze({
-	VOLUMECHANGE: 'volumechange',
-	DURATIONCHANGE: 'durationchange',
-	LOADEDMETADATA: 'loadedmetadata',
-	LOADEDDATA: 'loadeddata',
-	LOADSTART: 'loadstart',
-	LOADEND: 'loadend',
-	PROGRESS: 'progress',
-	CANPLAY: 'canplay',
-	canplaythrough: 'canplaythrough',
-	PLAY: 'play',
-	PLAYING: 'playing',
-	PAUSE: 'pause',
-	TIMEUPDATE: 'timeupdate',
-	SEEKING: 'seeking',
-	SEEKED: 'seeked',
-	EMPTIED: 'emptied',
-	STALLED: 'stalled',
-	SUSPEND: 'suspend',
-	WAITING: 'waiting',
-	ERROR: 'error',
-	DESTROYING: 'destroying',
-});
 
 NativePlayer._video = null;
 
