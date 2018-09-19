@@ -20,6 +20,14 @@ const Player = Ludanton.default.Player;
 const element = document.querySelector('#video');
 const player = new Player(element);
 
+player.addEventListener(Player.Event.PLAY, event => {
+	console.log(event);
+});
+
+player.addEventListener(Player.Event.PLAYING, event => {
+	console.log(event);
+});
+
 player.addEventListener(Player.Event.ERROR, event => {
 	console.error(event.detail);
 });
@@ -49,12 +57,12 @@ player.setSource([
 ]);
 player.play();
 
-setTimeout(() => {
-	player.setSource(
-		'https://storage.googleapis.com/coverr-main/mp4/Fishermans-Village.mp4'
-	);
-	player.play();
-}, 5e3);
+// setTimeout(() => {
+// 	player.setSource(
+// 		'https://storage.googleapis.com/coverr-main/mp4/Fishermans-Village.mp4'
+// 	);
+// 	player.play();
+// }, 5e3);
 
 	</script>
 	<a href="./test.html">Link</a>
