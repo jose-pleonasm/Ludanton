@@ -418,9 +418,9 @@ class NativePlayer extends EventTarget {
 			this._logger.trace(`@${event.type}`, event);
 		}
 
-		const e = createEvent(NativePlayer.Event.VOLUME_CHANGE, {
-			muted: this._element.muted,
-			level: this._element.volume,
+		const e = createEvent(NativePlayer.Event.VOLUMECHANGE, {
+			muted: this.isMuted(),
+			level: this.getVolume(),
 		});
 		this.dispatchEvent(e);
 	}
@@ -433,6 +433,11 @@ class NativePlayer extends EventTarget {
 		if (this._logger) {
 			this._logger.trace(`@${event.type}`, event);
 		}
+
+		const e = createEvent(NativePlayer.Event.DURATIONCHANGE, {
+			duration: this.getDuration(),
+		});
+		this.dispatchEvent(e);
 	}
 
 	/**
@@ -513,6 +518,11 @@ class NativePlayer extends EventTarget {
 		if (this._logger) {
 			this._logger.trace(`@${event.type}`, event);
 		}
+
+		const e = createEvent(NativePlayer.Event.PLAY, {
+			time: this.getCurrentTime(),
+		});
+		this.dispatchEvent(e);
 	}
 
 	/**
@@ -524,6 +534,11 @@ class NativePlayer extends EventTarget {
 			this._logger.trace(`@${event.type}`, event);
 		}
 		this._resolvePlayPromise();
+
+		const e = createEvent(NativePlayer.Event.PLAYING, {
+			time: this.getCurrentTime(),
+		});
+		this.dispatchEvent(e);
 	}
 
 	/**
@@ -638,13 +653,30 @@ class NativePlayer extends EventTarget {
 		const event = createEvent(NativePlayer.Event.ERROR, error);
 
 		this.dispatchEvent(event);
-
 		return event;
 	}
 }
 
 NativePlayer.Event = Object.freeze({
-	VOLUME_CHANGE: 'volumechange',
+	VOLUMECHANGE: 'volumechange',
+	DURATIONCHANGE: 'durationchange',
+	LOADEDMETADATA: 'loadedmetadata',
+	LOADEDDATA: 'loadeddata',
+	LOADSTART: 'loadstart',
+	LOADEND: 'loadend',
+	PROGRESS: 'progress',
+	CANPLAY: 'canplay',
+	canplaythrough: 'canplaythrough',
+	PLAY: 'play',
+	PLAYING: 'playing',
+	PAUSE: 'pause',
+	TIMEUPDATE: 'timeupdate',
+	SEEKING: 'seeking',
+	SEEKED: 'seeked',
+	EMPTIED: 'emptied',
+	STALLED: 'stalled',
+	SUSPEND: 'suspend',
+	WAITING: 'waiting',
 	ERROR: 'error',
 	DESTROYING: 'destroying',
 });

@@ -33,7 +33,10 @@ class Player extends EventTarget {
 		 * @type {Array<Array<string, Function>>}
 		 */
 		this._eventMap = [
-			[NativePlayer.Event.VOLUME_CHANGE, this._handleEvent],
+			[NativePlayer.Event.VOLUMECHANGE, this._handleEvent],
+			[NativePlayer.Event.DURATIONCHANGE, this._handleEvent],
+			[NativePlayer.Event.PLAY, this._handleEvent],
+			[NativePlayer.Event.PLAYING, this._handleEvent],
 		].map(
 			(item) => [item[0], item[1].bind(this)],
 			this,
@@ -47,7 +50,10 @@ class Player extends EventTarget {
 		this._corePlayer.setLogger(
 			logging.getLogger('channel:main.NativePlayer')
 		);
-		this._eventManager.listen(this._corePlayer, NativePlayer.Event.VOLUME_CHANGE);
+		this._eventManager.listen(this._corePlayer, NativePlayer.Event.VOLUMECHANGE);
+		this._eventManager.listen(this._corePlayer, NativePlayer.Event.DURATIONCHANGE);
+		this._eventManager.listen(this._corePlayer, NativePlayer.Event.PLAY);
+		this._eventManager.listen(this._corePlayer, NativePlayer.Event.PLAYING);
 	}
 
 	/**
