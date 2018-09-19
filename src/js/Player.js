@@ -130,8 +130,28 @@ class Player extends EventTarget {
 		const detail = {};
 
 		switch (type) {
+			case Player.Event.VOLUMECHANGE:
+				detail.muted = this._corePlayer.isMuted();
+				detail.level = this._corePlayer.getVolume();
+				break;
+
+			case Player.Event.DURATIONCHANGE:
+			case Player.Event.LOADEDMETADATA:
+				detail.duration = this._corePlayer.getDuration();
+				break;
+
+			case Player.Event.PLAY:
 			case Player.Event.PLAYING:
+			case Player.Event.TIMEUPDATE:
+			case Player.Event.SEEKING:
+			case Player.Event.SEEKED:
 				detail.time = this._corePlayer.getCurrentTime();
+				break;
+
+			case Player.Event.PAUSE:
+				detail.time = this._corePlayer.getCurrentTime();
+				detail.ended = this._corePlayer.isEnded();
+				break;
 		}
 
 		this.dispatchEvent(new CustomEvent(type, { detail }));
@@ -160,7 +180,7 @@ const EVENT = {
 	LOADEND: 'loadend',
 	PROGRESS: 'progress',
 	CANPLAY: 'canplay',
-	canplaythrough: 'canplaythrough',
+	CANPLAYTHROUGH: 'canplaythrough',
 	PLAY: 'play',
 	PLAYING: 'playing',
 	PAUSE: 'pause',
