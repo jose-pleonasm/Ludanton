@@ -171,10 +171,6 @@ class NativePlayer {
 	 * @return {string} URI
 	 */
 	getCurrentSrc() {
-		if (!this._source) {
-			return '';
-		}
-
 		return this._element.currentSrc;
 	}
 

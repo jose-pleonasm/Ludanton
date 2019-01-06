@@ -1,5 +1,7 @@
 'use strict';
-import { RESOLUTION_FACTOR } from './settings.js';
+import {
+	RESOLUTION_FACTOR, GET_CURRENT_SRC_TIMEOUT, GET_CURRENT_SRC_INTERVAL,
+} from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
 import { getTypeByFilename } from './utils/general.js';
@@ -120,7 +122,7 @@ class Player extends EventTarget {
 		this._corePlayer.pause();
 	}
 
-	_init() {
+	async _init() {
 		const element = this._corePlayer.getElement();
 		const sourceElements = element.src ? [{ src: element.src }] : Array.from(
 			element.getElementsByTagName('source')
@@ -141,12 +143,13 @@ class Player extends EventTarget {
 
 		} else {
 			const source = createSource(sources);
-			const optimalSource = this._getOptimalSource(source);
-
 			this._src = source;
-			if (optimalSource) {
-				this._corePlayer.setSourceWithoutInterruption(optimalSource);
-			}
+
+			const currentSrc = await this._getCurrentSrc();
+			const currentSource = source.find(obj => obj.src === currentSrc)
+				|| { src: currentSrc, type: getTypeByFilename(currentSrc) };
+
+			this._corePlayer.setSourceWithoutInterruption(currentSource);
 		}
 	}
 
@@ -174,6 +177,35 @@ class Player extends EventTarget {
 		}
 
 		return null;
+	}
+
+	_getCurrentSrc() {
+		const getCurrentSrcWhenAvailable = (timeout, resolve, reject) => {
+			const currentSrc = this._corePlayer.getCurrentSrc();
+			if (currentSrc) {
+				return resolve(currentSrc);
+			}
+			if (timeout <= 0) {
+				return reject(new Error('timeout'));
+			}
+
+			setTimeout(
+				() => getCurrentSrcWhenAvailable(
+					timeout - GET_CURRENT_SRC_INTERVAL,
+					resolve,
+					reject,
+				),
+				GET_CURRENT_SRC_INTERVAL,
+			);
+		};
+
+		return new Promise(
+			(resolve, reject) => getCurrentSrcWhenAvailable(
+				GET_CURRENT_SRC_TIMEOUT,
+				resolve,
+				reject,
+			),
+		);
 	}
 
 	_getBestQualitySource(sources) {
