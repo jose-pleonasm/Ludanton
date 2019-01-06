@@ -15,6 +15,10 @@ export default {
 	 * @return {Resolution} Width and height of the screen.
 	 */
 	getScreenResolution() {
+		if (typeof window === 'undefined') {
+			return { width: NaN, height: NaN };
+		}
+
 		let ratio = window.devicePixelRatio || 1;
 		let width = Math.max(window.screen.width, window.screen.height);
 		let height = Math.min(window.screen.width, window.screen.height);
