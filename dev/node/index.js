@@ -3,7 +3,7 @@ global.logging = require('py-logging');
 global.commonkit = require('py-logging/commonkit');
 global.py_logging_browserkit = require('py-logging-browserkit');
 
-const Ludanton = require('../dist/ludanton.js').default;
+const Ludanton = require('../../dist/ludanton.js').default;
 
 /*
 const error = new Ludanton.LudantonError(
@@ -33,8 +33,8 @@ function eventListener(event) {
 	console.log(event);
 }
 
-player.addEventListener('my', eventListener, { once: true });
-player.dispatchEvent({ type: 'my' });
+player.addEventListener('MyEvent', eventListener, { once: true });
+player.dispatchEvent({ type: 'MyEvent' });
 /*
 const start = Date.now();
 for (let i = 0; i < 10000000; i++) {
