@@ -51,6 +51,21 @@ export const generateId = (namespace = NS) => {
 	return `${namespace}-${Date.now()}-${counter++}`;
 };
 
+/**
+ * nextEvent.
+ *
+ * https://twitter.com/DasSurma/status/1078375282183151617
+ *
+ * @param  {target} Object
+ * @param  {name} string
+ * @return {Promise<Event>}
+ */
+export const nextEvent = (target, name) => {
+	return new Promise(resolve => {
+		target.addEventListener(name, resolve, { once: true });
+	});
+};
+
 
 const getFileExt = (path) => {
 	if (!path || typeof path !== 'string') {
