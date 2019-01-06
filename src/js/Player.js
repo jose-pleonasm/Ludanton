@@ -122,7 +122,7 @@ class Player extends EventTarget {
 
 	_init() {
 		const element = this._corePlayer.getElement();
-		const sourceElements = Array.from(
+		const sourceElements = element.src ? [{ src: element.src }] : Array.from(
 			element.getElementsByTagName('source')
 		);
 		if (!sourceElements.length) {
