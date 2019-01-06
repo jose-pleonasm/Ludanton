@@ -113,6 +113,22 @@ class NativePlayer {
 		this._eventManager.listen(this._element, 'stalled');
 		this._eventManager.listen(this._element, 'suspend');
 		this._eventManager.listen(this._element, 'error');
+
+		this._eventManager.listen(this._element, 'durationchange');
+		this._eventManager.listen(this._element, 'loadedmetadata');
+		this._eventManager.listen(this._element, 'loadeddata');
+		this._eventManager.listen(this._element, 'loadstart');
+		this._eventManager.listen(this._element, 'loadend');
+		this._eventManager.listen(this._element, 'progress');
+		this._eventManager.listen(this._element, 'canplay');
+		this._eventManager.listen(this._element, 'canplaythrough');
+		this._eventManager.listen(this._element, 'play');
+		this._eventManager.listen(this._element, 'playing');
+		this._eventManager.listen(this._element, 'pause');
+		this._eventManager.listen(this._element, 'timeupdate');
+		this._eventManager.listen(this._element, 'seeking');
+		this._eventManager.listen(this._element, 'seeked');
+		this._eventManager.listen(this._element, 'waiting');
 	}
 
 	/**
@@ -198,10 +214,24 @@ class NativePlayer {
 	}
 
 	/**
+	 * @return {TimeRanges}
+	 */
+	getPlayed() {
+		return this._element.played;
+	}
+
+	/**
 	 * @return {boolean}
 	 */
 	isReady() {
 		return true;
+	}
+
+	/**
+	 * @return {boolean}
+	 */
+	isAutoplay() {
+		return this._element.autoplay;
 	}
 
 	/**
@@ -238,23 +268,18 @@ class NativePlayer {
 
 		this._source = source;
 
-		this._eventManager.listen(this._element, 'durationchange');
-		this._eventManager.listen(this._element, 'loadedmetadata');
-		this._eventManager.listen(this._element, 'loadeddata');
-		this._eventManager.listen(this._element, 'loadstart');
-		this._eventManager.listen(this._element, 'loadend');
-		this._eventManager.listen(this._element, 'progress');
-		this._eventManager.listen(this._element, 'canplay');
-		this._eventManager.listen(this._element, 'canplaythrough');
-		this._eventManager.listen(this._element, 'play');
-		this._eventManager.listen(this._element, 'playing');
-		this._eventManager.listen(this._element, 'pause');
-		this._eventManager.listen(this._element, 'timeupdate');
-		this._eventManager.listen(this._element, 'seeking');
-		this._eventManager.listen(this._element, 'seeked');
-		this._eventManager.listen(this._element, 'waiting');
-
 		this._element.src = source.src;
+	}
+
+	/**
+	 * @param {Source} source
+	 */
+	setSourceWithoutInterruption(source) {
+		if (this._logger) {
+			this._logger.trace('#setSourceWithoutInterruption', [source]);
+		}
+
+		this._source = source;
 	}
 
 	/**
@@ -267,27 +292,12 @@ class NativePlayer {
 		}
 
 		this._rejectPlayPromise();
-		this._eventManager.unlisten(this._element, 'durationchange');
-		this._eventManager.unlisten(this._element, 'loadedmetadata');
-		this._eventManager.unlisten(this._element, 'loadeddata');
-		this._eventManager.unlisten(this._element, 'loadstart');
-		this._eventManager.unlisten(this._element, 'loadend');
-		this._eventManager.unlisten(this._element, 'progress');
-		this._eventManager.unlisten(this._element, 'canplay');
-		this._eventManager.unlisten(this._element, 'canplaythrough');
-		this._eventManager.unlisten(this._element, 'play');
-		this._eventManager.unlisten(this._element, 'playing');
-		this._eventManager.unlisten(this._element, 'pause');
-		this._eventManager.unlisten(this._element, 'timeupdate');
-		this._eventManager.unlisten(this._element, 'seeking');
-		this._eventManager.unlisten(this._element, 'seeked');
-		this._eventManager.unlisten(this._element, 'waiting');
 
 		this._source = null;
 
 		this._element.removeAttribute('src');
 		try {
-			this._element.load();
+			this.load();
 		}
 		catch (error) {
 			// empty

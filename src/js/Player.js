@@ -2,12 +2,18 @@
 import { RESOLUTION_FACTOR } from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
+import { getTypeByFilename } from './utils/general.js';
 import env from './utils/env.js';
 import createSource from './utils/createSource.js';
 import createEvent from './utils/createEvent.js';
 import NativePlayer from './core/NativePlayer.js';
 import logging from './utils/logging.js';
 
+
+/**
+ * @typedef {Object} Configuration
+ * @property {Resolution} screenResolution
+ */
 
 const logger = logging.getLogger('channel:main.Player');
 
@@ -21,12 +27,21 @@ class Player extends EventTarget {
 	constructor(element) {
 		super();
 
-		this._source = null;
-
 		this._handleEvent = this._handleEvent.bind(this);
 
+		/**
+		 * @type {(null|MediaUrl|MediaObject|Array<MediaObject>)}
+		 */
+		this._src = null;
+
+		/**
+		 * @type {NativePlayer}
+		 */
 		this._corePlayer = new NativePlayer(element, this._handleEvent);
 
+		/**
+		 * @type {Configuration}
+		 */
 		this._cfg = {
 			screenResolution: env.getScreenResolution(),
 		};
@@ -34,6 +49,8 @@ class Player extends EventTarget {
 		this._corePlayer.setLogger(
 			logging.getLogger('channel:main.NativePlayer')
 		);
+
+		this._init();
 	}
 
 	/**
@@ -49,11 +66,30 @@ class Player extends EventTarget {
 	}
 
 	/**
+	 * Returns the source.
+	 * @return {(null|MediaUrl|MediaObject|Array<MediaObject>)}
+	 */
+	getSource() {
+		return this._src;
+	}
+
+	/**
+	 * Indicates whether playback is paused.
+	 *
+	 * @return {boolean}
+	 */
+	isPaused() {
+		return this._corePlayer.isPaused();
+	}
+
+	/**
 	 * Set the source.
 	 * @param {(MediaUrl|MediaObject|Array<MediaObject>)} src
 	 */
 	setSource(src) {
 		logger.trace('#setSource', [src]);
+		this._src = src;
+
 		const source = createSource(src);
 		const optimalSource = this._getOptimalSource(source);
 
@@ -82,6 +118,36 @@ class Player extends EventTarget {
 	pause() {
 		logger.trace('#pause');
 		this._corePlayer.pause();
+	}
+
+	_init() {
+		const element = this._corePlayer.getElement();
+		const sourceElements = Array.from(
+			element.getElementsByTagName('source')
+		);
+		if (!sourceElements.length) {
+			return;
+		}
+
+		const sources = sourceElements.map(
+			({ src, type }) => ({ src, type: type || getTypeByFilename(src) })
+		);
+		const canSetSource = this._corePlayer.isPaused()
+			&& !this._corePlayer.getPlayed().length
+			&& !this._corePlayer.isAutoplay();
+
+		if (canSetSource) {
+			this.setSource(sources);
+
+		} else {
+			const source = createSource(sources);
+			const optimalSource = this._getOptimalSource(source);
+
+			this._src = source;
+			if (optimalSource) {
+				this._corePlayer.setSourceWithoutInterruption(optimalSource);
+			}
+		}
 	}
 
 	_getOptimalSource(sources) {

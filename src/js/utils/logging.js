@@ -189,8 +189,8 @@ logging.config({
 		'main:console_trace': {
 			class: 'logging.ConsoleHandler',
 			level: 'TRACE',
-			// grouping: false,
-			formatter: 'trace',
+			grouping: false,
+			formatter: 'stylish',
 			filters: ['trace', 'remove_channel'],
 		},
 	},
