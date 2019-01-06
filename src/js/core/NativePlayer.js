@@ -1,6 +1,5 @@
 'use strict';
 import LudantonError from '../utils/Error.js';
-import EventTarget from '../utils/EventTarget.js';
 import EventManager from '../utils/EventManager.js';
 import createEvent from '../utils/createEvent.js';
 import { generateId } from '../utils/general.js';
@@ -9,7 +8,7 @@ import { generateId } from '../utils/general.js';
 /**
  * NativePlayer.
  */
-class NativePlayer extends EventTarget {
+class NativePlayer {
 	static _getVideo() {
 		if (!NativePlayer._video) {
 			NativePlayer._video = window.document.createElement('video');
@@ -32,8 +31,6 @@ class NativePlayer extends EventTarget {
 	 * @param  {Function} eventHandler
 	 */
 	constructor(element, eventHandler) {
-		super();
-
 		/**
 		 * @type {HTMLVideoElement}
 		 */
@@ -112,7 +109,6 @@ class NativePlayer extends EventTarget {
 		 * @type {(Object|null)}
 		 */
 		this._logger = null;
-
 
 		this._eventManager.listen(this._element, 'volumechange');
 		this._eventManager.listen(this._element, 'emptied');
