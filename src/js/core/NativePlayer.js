@@ -1,9 +1,7 @@
 'use strict';
 import LudantonError from '../utils/Error.js';
 import EventManager from '../utils/EventManager.js';
-import createEvent from '../utils/createEvent.js';
 import { generateId } from '../utils/general.js';
-
 
 /**
  * NativePlayer.
@@ -123,9 +121,6 @@ class NativePlayer {
 	 * After destruction, a NativePlayer instance cannot be used again.
 	 */
 	destroy() {
-		const event = createEvent(NativePlayer.Event.DESTROYING);
-		this.dispatchEvent(event);
-
 		this._rejectPlayPromise();
 		this._eventManager.clear();
 		this._destroyed = true;
@@ -414,13 +409,14 @@ class NativePlayer {
 	/**
 	 * @private
 	 * @param  {Event} event
+	 * @param  {*} [data]
 	 */
-	_transferEvent(event) {
+	_transferEvent(event, data) {
 		if (this._logger) {
 			this._logger.trace(`@${event.type}`, event);
 		}
 
-		this._emit(event.type);
+		this._emit(event.type, data);
 	}
 
 	/**
@@ -452,23 +448,15 @@ class NativePlayer {
 			return;
 		}
 
-		this._dispatchError(new LudantonError(
+		const error = new LudantonError(
 			LudantonError.Code.SOURCE_MEDIA,
 			LudantonError.Category.MEDIA,
 			this._source,
 			this._element.currentSrc,
 			mediaError,
-		));
-	}
+		);
 
-	/**
-	 * @param  {Error} error
-	 */
-	_dispatchError(error) {
-		const event = createEvent(NativePlayer.Event.ERROR, error);
-
-		this.dispatchEvent(event);
-		return event;
+		this._transferEvent(event, error);
 	}
 }
 

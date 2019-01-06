@@ -27,13 +27,25 @@ class Player extends EventTarget {
 
 		this._corePlayer = new NativePlayer(element, this._handleEvent);
 
-		this._options = {
+		this._cfg = {
 			screenResolution: env.getScreenResolution(),
 		};
 
 		this._corePlayer.setLogger(
 			logging.getLogger('channel:main.NativePlayer')
 		);
+	}
+
+	/**
+	 * Destructor.
+	 *
+	 * After destruction, a NativePlayer instance cannot be used again.
+	 */
+	destroy() {
+		const event = createEvent(Player.Event.DESTROYING);
+		this.dispatchEvent(event);
+
+		// TODO
 	}
 
 	/**
@@ -104,7 +116,7 @@ class Player extends EventTarget {
 		return qualities.length
 			? this._getSourceByResolution(
 				qualities,
-				this._options.screenResolution
+				this._cfg.screenResolution
 			)
 			: sources[0];
 	}
@@ -124,8 +136,9 @@ class Player extends EventTarget {
 	/**
 	 * @private
 	 * @param  {string} eventName
+	 * @param  {*} [data]
 	 */
-	_handleEvent(eventName) {
+	_handleEvent(eventName, data) {
 		const type = Player.Event[eventName.toUpperCase()];
 		const detail = {};
 
@@ -152,6 +165,10 @@ class Player extends EventTarget {
 				detail.time = this._corePlayer.getCurrentTime();
 				detail.ended = this._corePlayer.isEnded();
 				break;
+
+			case Player.Event.ERROR:
+				this._dispatchError(data);
+				return;
 		}
 
 		this.dispatchEvent(new CustomEvent(type, { detail }));
