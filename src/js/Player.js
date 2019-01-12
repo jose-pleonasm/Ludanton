@@ -5,6 +5,7 @@ import {
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
 import { getTypeByFilename } from './utils/general.js';
+import { getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
 import createSource from './utils/createSource.js';
 import createEvent from './utils/createEvent.js';
@@ -156,12 +157,13 @@ class Player extends EventTarget {
 	}
 
 	_getOptimalSource(sources) {
+		const canPlaySource = this._corePlayer.constructor.canPlaySource;
 		const probably = [];
 		const maybe = [];
 
 		for (let i = 0, len = sources.length; i < len; i++) {
 			const source = sources[i];
-			const canPlay = this._corePlayer.constructor.canPlaySource(source);
+			const canPlay = canPlaySource(source);
 
 			if (canPlay === 'probably') {
 				probably.push(source);
@@ -214,23 +216,11 @@ class Player extends EventTarget {
 		const qualities = sources.filter(source => !!source.qualityDescriptor);
 
 		return qualities.length
-			? this._getSourceByResolution(
+			? getSourceByResolution(
 				qualities,
 				this._cfg.screenResolution
 			)
 			: sources[0];
-	}
-
-	_getSourceByResolution(sources, resolution) {
-		const resSources = sources.sort((a, b) => {
-			return b.qualityDescriptor.height - a.qualityDescriptor.height;
-		});
-
-		for (var i = 0, len = resSources.length; i < len; i++) {
-			if (resSources[i].qualityDescriptor.height <= resolution.height) {
-				return resSources[i];
-			}
-		}
 	}
 
 	/**
