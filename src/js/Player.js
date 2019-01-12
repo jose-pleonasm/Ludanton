@@ -123,6 +123,7 @@ class Player extends EventTarget {
 	}
 
 	async _init() {
+		logger.trace('#init');
 		const element = this._corePlayer.getElement();
 		const sourceElements = element.src ? [{ src: element.src }] : Array.from(
 			element.getElementsByTagName('source')

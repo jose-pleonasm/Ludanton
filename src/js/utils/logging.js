@@ -92,7 +92,7 @@ logging.ChannelRemover = class ChannelRemover extends Filter {
 	filter(record) {
 		var parts = record.name.split('.');
 
-		record.name = parts.splice(1).join('.')
+		record.name = parts.splice(1).join('.');
 		return true;
 	}
 };
@@ -100,6 +100,71 @@ logging.ChannelRemover = class ChannelRemover extends Filter {
 
 commonkit.install(logging);
 py_logging_browserkit.install(logging);
+
+
+logging.StylishConsoleFormatter.prototype._processItem = function(data, record, match, key, flag, width, precision, type) {
+	var ua = typeof window === 'object' && window
+		&& window.navigator && window.navigator.userAgent;
+	var isIE = ua && (ua.indexOf('MSIE') > -1 || ua.indexOf('Trident') > -1);
+	var pureValue = record[key];
+	var directive = this._getDirective(
+		match,
+		key,
+		flag,
+		width,
+		precision,
+		type
+	);
+	var value = this._getValue(
+		record,
+		key,
+		flag,
+		width,
+		precision,
+		type
+	);
+	function getStyleByRE(key, pureValue) {
+		var styleREs = this._styles[key]
+			? Object.keys(this._styles[key])
+			: [];
+
+		for (var i = 0; i < styleREs.length; i++) {
+			var styleRE = styleREs[i];
+			try {
+				if (!styleRE) {
+					continue;
+				}
+
+				if (pureValue.search(styleRE) > -1) {
+					return this._styles[key][styleRE];
+				}
+			}
+			catch (error) {
+				continue;
+			}
+		}
+	}
+	var style = (
+		this._styles[key]
+		&& (this._styles[key][pureValue] || this._styles[key]['*'])
+	) || getStyleByRE.call(this, key, pureValue);
+	var styling = !isIE && style
+		? this._getStyling(key, pureValue, style)
+		: '';
+
+	if (styling) {
+		directive = '%c' + directive;
+		data.push(styling);
+	}
+	data.push(value);
+	if (styling) {
+		directive = directive + '%c';
+		data.push('');
+	}
+
+	return directive;
+};
+
 
 logging.config({
 	version: 1,
@@ -116,23 +181,9 @@ logging.config({
 		},
 		trace: {
 			class: 'logging.StylishConsoleFormatter',
-			format: '%(message)s%(args)o',
+			format: '%(name)s %(message)s %(args)O',
 			styles: {
-				name: {
-					'*': {
-						'margin': '0;',
-						'border': '0;',
-						'padding': '1px 0;',
-						// 'font-family': 'monospace;',
-						// 'background-color': '#333;',
-						// 'color': '#fff;',
-						// 'text-transform': 'uppercase;',
-						'font-weight': 'bold;',
-						// 'background-color': '#cb2027;',
-						'color': '#000;',
-						'border-radius': '4px;',
-					},
-				},
+				...logging.StylishConsoleFormatter.COLORED_BG_NAME,
 				message: {
 					'^#.+': {
 						'padding': '1px 2px;',
@@ -149,10 +200,11 @@ logging.config({
 					},
 				},
 			},
+			colors: logging.StylishConsoleFormatter.TIGHT_PALLETE,
 		},
 	},
 	filters: {
-		trace: {
+		trace_only: {
 			class: 'logging.LevelFilter',
 			level: 'TRACE',
 		},
@@ -165,20 +217,6 @@ logging.config({
 		},
 	},
 	handlers: {
-		console: {
-			class: 'logging.ConsoleHandler',
-			level: 'DEBUG',
-			grouping: false,
-			formatter: 'stylish',
-			filters: ['trace_less'],
-		},
-		console_trace: {
-			class: 'logging.ConsoleHandler',
-			level: 'TRACE',
-			// grouping: false,
-			formatter: 'trace',
-			filters: ['trace'],
-		},
 		'main:console': {
 			class: 'logging.ConsoleHandler',
 			level: 'DEBUG',
@@ -190,8 +228,8 @@ logging.config({
 			class: 'logging.ConsoleHandler',
 			level: 'TRACE',
 			grouping: false,
-			formatter: 'stylish',
-			filters: ['trace', 'remove_channel'],
+			formatter: 'trace',
+			filters: ['trace_only', 'remove_channel'],
 		},
 	},
 	loggers: {
