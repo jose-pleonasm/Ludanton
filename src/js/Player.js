@@ -77,6 +77,14 @@ class Player extends EventTarget {
 	}
 
 	/**
+	 * Returns current source.
+	 * @return {(null|MediaObject)}
+	 */
+	getCurrentSource() {
+		return this._corePlayer.getSource();
+	}
+
+	/**
 	 * Indicates whether playback is paused.
 	 *
 	 * @return {boolean}
