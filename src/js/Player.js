@@ -94,6 +94,7 @@ class Player extends EventTarget {
 
 		const source = createSource(src);
 		const optimalSource = this._getOptimalSource(source);
+		logger.info('optimal source:', optimalSource);
 
 		if (!optimalSource) {
 			throw new LudantonError(

@@ -177,7 +177,10 @@ logging.config({
 		},
 		stylish: {
 			class: 'logging.StylishConsoleFormatter',
-			format: '%(name)-14s %(message)o %(args)O'
+			format: '%(levelname)-10s %(name)-20s %(message)s\t%(args)O',
+			styles: {
+				...logging.StylishConsoleFormatter.COLORED_LEVELNAME
+			},
 		},
 		trace: {
 			class: 'logging.StylishConsoleFormatter',
