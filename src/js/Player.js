@@ -274,7 +274,7 @@ class Player extends EventTarget {
 	}
 
 	_dispatchError(error) {
-		const event = createEvent(NativePlayer.Event.ERROR, error);
+		const event = createEvent(Player.Event.ERROR, error);
 
 		this.dispatchEvent(event);
 
