@@ -43,15 +43,6 @@ const inspectorView = new InspectorView(
 	document.querySelector('#view')
 );
 
-inspector.getMyHistory = () => inspector.getHistory([
-	'currentTime',
-	'paused',
-	'seeking',
-	'readyState',
-	'networkState',
-	'currentSrc',
-	'currentSource',
-]);
 inspector.set(player, element);
 
 player.addEventListener(Player.Event.PLAY, event => {

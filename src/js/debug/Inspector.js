@@ -1,5 +1,6 @@
 import EventTarget from '../utils/EventTarget.js';
 import { isEqualObjectShallow } from './utils.js';
+import { mediaEventsList } from './events.js';
 
 const source = (player, corePlayer, element) => ({
 	currentSrc: element.currentSrc,
@@ -37,7 +38,7 @@ export class Inspector extends EventTarget {
 		super();
 
 		this._config = {
-			interval: 200,
+			interval: null,
 			...config,
 		};
 		this.history = [];
@@ -46,22 +47,18 @@ export class Inspector extends EventTarget {
 		this._element = null;
 		this._intervalId = null;
 		this._listeners = [];
-		this._relEvents = [
-			'loadstart',
-			'loadedmetadata',
-			'loadeddata',
-			'durationchange',
-			'ratechange',
-			'playing',
-			'timeupdate',
-		];
+		this._relEvents = mediaEventsList;
 
 		this.update = this.update.bind(this);
 	}
 
 	destroy() {
-		clearInterval(this._intervalId);
-		this._relEvents.forEach(eventType => this._element.removeEventListener(eventType, this.update));
+		if (this._intervalId) {
+			clearInterval(this._intervalId);
+		}
+		this._relEvents.forEach(
+			eventType => this._element.removeEventListener(eventType, this.update)
+		);
 	}
 
 	set(player, element) {
@@ -87,7 +84,10 @@ export class Inspector extends EventTarget {
 
 		if (mask && Array.isArray(mask)) {
 			history = history.map(item => {
-				return mask.reduce((newItem, key) => { newItem[key] = item[key]; return newItem; }, {});
+				return mask.reduce(
+					(newItem, key) => { newItem[key] = item[key]; return newItem; },
+					{}
+				);
 			});
 		}
 
@@ -98,8 +98,11 @@ export class Inspector extends EventTarget {
 		return this.getHistory(Inspector.myMask);
 	}
 
-	update() {
+	update(event) {
 		const detail = this.getState();
+
+		detail.eventType = event ? event.type : '';
+
 		if (this._filter(detail)) {
 			return;
 		}
@@ -110,8 +113,12 @@ export class Inspector extends EventTarget {
 
 	_init() {
 		this.update();
-		this._intervalId = setInterval(this.update, this._config.interval);
-		this._relEvents.forEach(eventType => this._element.addEventListener(eventType, this.update));
+		if (this._config.interval) {
+			this._intervalId = setInterval(this.update, this._config.interval);
+		}
+		this._relEvents.forEach(
+			eventType => this._element.addEventListener(eventType, this.update)
+		);
 	}
 
 	_filter(state) {
@@ -121,6 +128,7 @@ export class Inspector extends EventTarget {
 }
 
 Inspector.myMask = [
+	'eventType',
 	'currentTime',
 	'paused',
 	'seeking',
