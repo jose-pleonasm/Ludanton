@@ -13,3 +13,84 @@ Checklist
 =========
 https://frontendchecklist.io/
 
+
+
+
+
+CSS rule order:
+===============
+
+Sass Inheritance
+
+    @extend
+    @mixin, e.g. clearfix
+
+Generated Content
+
+    content
+
+Position and Layout
+
+    position
+    z-index
+    top
+    bottom
+    left
+    right
+    Flexbox properties
+    float
+    clear
+
+Display and Visibility
+
+    display
+    opacity
+    transform
+
+Clipping
+
+    overflow
+    clip
+
+Animation
+
+    animation
+    transition
+
+Box Model (from outside in)
+
+    margin
+    box-shadow
+    border
+    border-radius
+    box-sizing
+    width
+    height
+    padding
+
+Background
+
+    background
+    cursor
+
+Typography
+
+    font-size
+    line-height
+    font-family
+    font-weight
+    font-style
+    text-align
+    text-transform
+    word-spacing
+    color
+
+Pseudo-classes & pseudo-elements (nested rules)
+
+    :hover
+    :focus
+    :active
+    :before
+    :after
+    :first-child
+    :last-child
