@@ -1,5 +1,5 @@
 import EventTarget from '../utils/EventTarget.js';
-import { isEqualObjectShallow } from './utils.js';
+import { isEqualObject } from './utils.js';
 import { mediaEventsList } from './events.js';
 
 const source = (player, corePlayer, element) => ({
@@ -123,7 +123,7 @@ export class Inspector extends EventTarget {
 
 	_filter(state) {
 		const prevState = this.history.length ? this.history[this.history.length - 1] : null;
-		return isEqualObjectShallow(state, prevState);
+		return isEqualObject(state, prevState);
 	}
 }
 

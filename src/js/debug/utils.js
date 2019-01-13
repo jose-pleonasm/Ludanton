@@ -1,11 +1,11 @@
 import { READY_STATE_MAP, NETWORK_STATE_MAP } from './constants.js';
 
-export const isEqualObjectShallow = (obj1, obj2) => {
-	if (!obj1 || !obj2) {
-		return false;
-	}
+export const isEqualObject = (obj1, obj2) => {
 	if (obj1 === obj2) {
 		return true;
+	}
+	if (!obj1 || !obj2) {
+		return false;
 	}
 
 	const obj1Keys = Object.keys(obj1);
@@ -17,7 +17,13 @@ export const isEqualObjectShallow = (obj1, obj2) => {
 		return true;
 	}
 
-	return !obj1Keys.some(key => obj1[key] !== obj2[key]);
+	return !obj1Keys.some(key => {
+		if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+			return !isEqualObject(obj1[key], obj2[key]);
+		}
+
+		return obj1[key] !== obj2[key];
+	});
 };
 
 export const readyStateCodeToText = (code) => READY_STATE_MAP[code];
