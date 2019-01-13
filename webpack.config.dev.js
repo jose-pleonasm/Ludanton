@@ -2,8 +2,11 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
+const htmlTemplate = './dev/html/index.html';
+const jsTemplate = './dev/js/index.html';
+
 const htmlPlugin = new HtmlWebPackPlugin({
-	template: './dev/html/index.html',
+	template: jsTemplate,
 	filename: './index.html',
 	inject: 'head',
 	lang: 'cs',
