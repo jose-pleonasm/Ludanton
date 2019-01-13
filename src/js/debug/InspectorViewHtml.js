@@ -6,6 +6,7 @@ export class InspectorViewHtml {
 		this._set = this._set.bind(this);
 
 		this._container = window.document.createElement('section');
+		this._container.className = 'inspector';
 		this._dom = {};
 		this._cache = {};
 
