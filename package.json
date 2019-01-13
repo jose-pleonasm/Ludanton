@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "get-value": "^3.0.1",
     "py-logging": "^2.3.0",
     "py-logging-browserkit": "^1.2.0"
   }
