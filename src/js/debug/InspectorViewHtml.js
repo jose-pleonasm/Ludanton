@@ -38,7 +38,7 @@ export class InspectorViewHtml {
 		this._set(state, 'readyState', readyStateCodeToText);
 		this._set(state, 'networkState', networkStateCodeToText);
 		this._set(state, 'currentTime');
-		this._set(state, 'source.src');
+		this._set(state, 'currentSource.src');
 		this._set(state, 'currentSrc');
 	}
 
