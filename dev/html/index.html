@@ -12,15 +12,25 @@
 			<source src="https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4">
 		</video>
 		<button id="button">button</button>
+		<div id="view" class="inspector-container"></div>
 	</div>
 	<script type="text/javascript">
 
 'use strict';
 
 const Player = Ludanton.default.Player;
+const Inspector = Ludanton.default.Inspector;
+const InspectorView = Ludanton.default.InspectorViewHtml;
 //const player = document.getElementById('button');
 const element = document.querySelector('#video');
 const player = new Player(element);
+const inspector = new Inspector({ interval: 100 });
+const inspectorView = new InspectorView(
+	inspector,
+	document.querySelector('#view')
+);
+
+inspector.set(player, element);
 
 player.addEventListener(Player.Event.PLAY, event => {
 	console.log('>> PLAY', event, player.isPaused());

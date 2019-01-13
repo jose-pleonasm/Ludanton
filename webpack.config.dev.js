@@ -1,8 +1,9 @@
+/*eslint-env node */
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 const htmlPlugin = new HtmlWebPackPlugin({
-	template: './dev/js/index.html',
+	template: './dev/html/index.html',
 	filename: './index.html',
 	inject: 'head',
 	lang: 'cs',
