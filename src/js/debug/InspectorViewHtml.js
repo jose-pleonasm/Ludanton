@@ -1,5 +1,6 @@
 import getValue from 'get-value';
 import { dom, readyStateCodeToText, networkStateCodeToText } from './utils.js';
+import './inspector.css';
 
 export class InspectorViewHtml {
 	constructor(inspector, element) {
