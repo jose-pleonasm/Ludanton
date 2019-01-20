@@ -4,7 +4,7 @@ import {
 } from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
-import { getTypeByFilename } from './utils/general.js';
+import { getTypeByFilename, generateId } from './utils/general.js';
 import { getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
 import createSource from './utils/createSource.js';
@@ -31,6 +31,11 @@ class Player extends EventTarget {
 		super();
 
 		this._handleEvent = this._handleEvent.bind(this);
+
+		/**
+		 * @type {string}
+		 */
+		this._id = element.id || generateId();
 
 		/**
 		 * @type {(null|MediaUrl|MediaObject|Array<MediaObject>)}
@@ -65,11 +70,34 @@ class Player extends EventTarget {
 		const event = createEvent(Player.Event.DESTROYING);
 		this.dispatchEvent(event);
 
-		// TODO
+		if (this._src && !this._corePlayer.getSource()) {
+			// TODO: wait for source ready
+		}
+		this._corePlayer.pause();
+		this._corePlayer.destroy();
+		this._corePlayer = null;
+		this._src = null;
+	}
+
+	/**
+	 * @return {string}
+	 */
+	toString() {
+		return `[object ${this.constructor.name}#${this._id}]`;
+	}
+
+	/**
+	 * Returns associated video element.
+	 *
+	 * @return {HTMLVideoElement}
+	 */
+	getElement() {
+		return this._corePlayer.getElement();
 	}
 
 	/**
 	 * Returns the source.
+	 *
 	 * @return {(null|MediaUrl|MediaObject|Array<MediaObject>)}
 	 */
 	getSource() {
@@ -78,10 +106,74 @@ class Player extends EventTarget {
 
 	/**
 	 * Returns current source.
+	 *
 	 * @return {(null|MediaObject)}
 	 */
 	getCurrentSource() {
 		return this._corePlayer.getSource();
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getVideoWidth() {
+		return this._corePlayer.getVideoWidth();
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getVideoHeight() {
+		return this._corePlayer.getVideoHeight();
+	}
+
+	/**
+	 * @return {number} 0 - 1
+	 */
+	getVolume() {
+		return this._corePlayer.getVolume();
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getCurrentTime() {
+		return this._corePlayer.getCurrentTime();
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getDuration() {
+		return this._corePlayer.getDuration();
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getPlaybackRate() {
+		return this._corePlayer.getPlaybackRate();
+	}
+
+	/**
+	 * @return {(VideoPlaybackQuality|null)}
+	 */
+	getVideoPlaybackQuality() {
+		return this._corePlayer.getVideoPlaybackQuality();
+	}
+
+	/**
+	 * @return {string}
+	 */
+	getPoster() {
+		return this._corePlayer.getPoster();
+	}
+
+	/**
+	 * @return {boolean}
+	 */
+	isReady() {
+		return true;
 	}
 
 	/**
@@ -94,7 +186,29 @@ class Player extends EventTarget {
 	}
 
 	/**
+	 * @return {boolean}
+	 */
+	isSeeking() {
+		return this._corePlayer.isSeeking();
+	}
+
+	/**
+	 * @return {boolean}
+	 */
+	isEnded() {
+		return this._corePlayer.isEnded();
+	}
+
+	/**
+	 * @return {boolean}
+	 */
+	isMuted() {
+		return this._corePlayer.isMuted();
+	}
+
+	/**
 	 * Set the source.
+	 *
 	 * @param {(MediaUrl|MediaObject|Array<MediaObject>)} src
 	 */
 	setSource(src) {
@@ -130,6 +244,14 @@ class Player extends EventTarget {
 	pause() {
 		logger.trace('#pause');
 		this._corePlayer.pause();
+	}
+
+	/**
+	 * @param {number} time
+	 */
+	seek(time) {
+		logger.trace('#seek');
+		this._corePlayer.seek(time);
 	}
 
 	async _init() {
@@ -246,8 +368,12 @@ class Player extends EventTarget {
 				detail.level = this._corePlayer.getVolume();
 				break;
 
-			case Player.Event.DURATIONCHANGE:
 			case Player.Event.LOADEDMETADATA:
+				detail.duration = this._corePlayer.getDuration();
+				break;
+
+			case Player.Event.DURATIONCHANGE:
+				detail.currentTime = this._corePlayer.getCurrentTime();
 				detail.duration = this._corePlayer.getDuration();
 				break;
 
@@ -256,11 +382,13 @@ class Player extends EventTarget {
 			case Player.Event.TIMEUPDATE:
 			case Player.Event.SEEKING:
 			case Player.Event.SEEKED:
-				detail.time = this._corePlayer.getCurrentTime();
+				detail.currentTime = this._corePlayer.getCurrentTime();
+				detail.duration = this._corePlayer.getDuration();
 				break;
 
 			case Player.Event.PAUSE:
-				detail.time = this._corePlayer.getCurrentTime();
+				detail.currentTime = this._corePlayer.getCurrentTime();
+				detail.duration = this._corePlayer.getDuration();
 				detail.ended = this._corePlayer.isEnded();
 				break;
 
@@ -269,7 +397,7 @@ class Player extends EventTarget {
 				return;
 		}
 
-		this.dispatchEvent(new CustomEvent(type, { detail }));
+		this.dispatchEvent(createEvent(type, detail));
 	}
 
 	_dispatchError(error) {

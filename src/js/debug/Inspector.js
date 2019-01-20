@@ -25,6 +25,7 @@ const playback = (player, corePlayer, element) => ({
 	seeking: element.seeking,
 	ended: element.ended,
 	playbackRate: element.playbackRate,
+	playbackQuality: corePlayer.getVideoPlaybackQuality(),
 });
 
 const media = (player, corePlayer, element) => ({
