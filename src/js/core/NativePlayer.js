@@ -212,8 +212,37 @@ class NativePlayer {
 	/**
 	 * @return {TimeRanges}
 	 */
+	getBuffered() {
+		return this._element.buffered;
+	}
+
+	/**
+	 * @return {TimeRanges}
+	 */
 	getPlayed() {
 		return this._element.played;
+	}
+
+	/**
+	 * @return {number}
+	 */
+	getPlaybackRate() {
+		return this._element.playbackRate;
+	}
+
+	/**
+	 * @return {(VideoPlaybackQuality|null)}
+	 */
+	getVideoPlaybackQuality() {
+		const hasMethod = typeof this._element.getVideoPlaybackQuality === 'function';
+		return hasMethod ? this._element.getVideoPlaybackQuality() : null;
+	}
+
+	/**
+	 * @return {string}
+	 */
+	getPoster() {
+		return this._element.poster;
 	}
 
 	/**
@@ -244,12 +273,27 @@ class NativePlayer {
 		return this._element.paused;
 	}
 
+	/**
+	 * @return {boolean}
+	 */
 	isSeeking() {
 		return this._element.seeking;
 	}
 
+	/**
+	 * @return {boolean}
+	 */
 	isEnded() {
 		return this._element.ended;
+	}
+
+	/**
+	 * @param  {Source} source
+	 * @return {string} @see
+	 * 	{@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType#Return_value}
+	 */
+	canPlaySource(source) {
+		return this._element.canPlayType(source.type);
 	}
 
 	/**
@@ -375,6 +419,21 @@ class NativePlayer {
 		}
 
 		this._element.currentTime = time;
+	}
+
+	/**
+	 * @param {number} time
+	 */
+	fastSeek(time) {
+		if (this._logger) {
+			this._logger.trace('#fastSeek', [time]);
+		}
+
+		if (typeof this._element.fastSeek === 'function') {
+			this._element.fastSeek(time);
+		} else {
+			this._element.currentTime = time;
+		}
 	}
 
 	/**
