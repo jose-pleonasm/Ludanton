@@ -231,10 +231,12 @@ class Player extends EventTarget {
 
 	/**
 	 * Starts playback of the source.
+	 *
+	 * @return {Promise}
 	 */
 	play() {
 		logger.trace('#play');
-		this._corePlayer.play();
+		return this._corePlayer.play();
 	}
 
 	/**

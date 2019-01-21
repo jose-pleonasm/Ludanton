@@ -138,7 +138,7 @@ class NativePlayer {
 	 */
 	destroy() {
 		this._rejectPlayPromise();
-		this._eventManager.clear();
+		this._eventManager.destroy();
 		this._destroyed = true;
 		this._element = null;
 	}
