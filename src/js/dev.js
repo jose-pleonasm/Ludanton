@@ -4,7 +4,7 @@ import VideoProperties from './videomock/videoproperties.js';
 import VideoModel from './videomock/videomodel.js';
 import LudantonError from './utils/Error.js';
 import LudantonEventTarget from './utils/EventTarget.js';
-import createSource from './utils/createSource.js';
+import { createSource } from './utils/source.js';
 import { Inspector } from './debug/Inspector.js';
 import { InspectorViewConsole } from './debug/InspectorViewConsole.js';
 import { InspectorViewHtml } from './debug/InspectorViewHtml.js';

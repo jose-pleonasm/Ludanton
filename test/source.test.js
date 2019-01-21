@@ -1,6 +1,6 @@
 /* global test:Function, expect:Function */
 'use strict';
-const createSource = require('../src/js/utils/createSource').default;
+const { createSource } = require('../src/js/utils/source');
 
 
 test('should throw error if src is not specified.', () => {

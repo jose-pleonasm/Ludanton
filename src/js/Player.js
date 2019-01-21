@@ -5,9 +5,8 @@ import {
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
 import { getTypeByFilename, generateId } from './utils/general.js';
-import { getSourceByResolution } from './utils/source.js';
+import { createSource, getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
-import createSource from './utils/createSource.js';
 import createEvent from './utils/createEvent.js';
 import NativePlayer from './core/NativePlayer.js';
 import logging from './utils/logging.js';
