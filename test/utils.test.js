@@ -1,6 +1,6 @@
 /* global jest:Object, test:Function, expect:Function, beforeEach:Function, describe:Function */
 'use strict';
-const { getTypeByFilename, parseQualityDescriptor, generateId } = require('../src/js/utils/general');
+const { getTypeByFilename, parseQualityDescriptor, createLocalId } = require('../src/js/utils/general');
 
 describe('#getTypeByFilename', () => {
 	test('should return correct type.', () => {
@@ -64,18 +64,18 @@ describe('#parseQualityDescriptor', () => {
 	});
 });
 
-describe('#generateId', () => {
+describe('#createLoacalId', () => {
 	test('should return non empty string.', () => {
 		let result = null;
 
-		result = generateId();
+		result = createLocalId();
 
 		expect(typeof result).toBe('string');
 		expect(!!result.length).toBe(true);
 	});
 	test('should return different id.', () => {
-		const id1 = generateId();
-		const id2 = generateId();
+		const id1 = createLocalId();
+		const id2 = createLocalId();
 
 		expect(id1).not.toBe(id2);
 	});
