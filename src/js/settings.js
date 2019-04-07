@@ -19,7 +19,7 @@ export const GET_CURRENT_SRC_TIMEOUT = 2e3;
 
 export const NS = (() => {
 	if (typeof window !== 'undefined' && window && window.location) {
-		return window.location.host.replace(/[^\w-\.]/g, '_');
+		return window.location.host.replace(/[^\w]/g, '');
 
 	} else if (typeof process !== 'undefined' && process && process.pid) {
 		return String(process.pid);
