@@ -17,6 +17,9 @@ class Locker {
 		this._ignoreEvents = [];
 	}
 
+	/**
+	 * @param  {string} name
+	 */
 	lock(name) {
 		const blacklist = this._blacklists[name];
 
@@ -34,6 +37,9 @@ class Locker {
 		];
 	}
 
+	/**
+	 * @param  {string} name
+	 */
 	unlock(name) {
 		const blacklist = this._blacklists[name];
 
@@ -50,6 +56,9 @@ class Locker {
 		);
 	}
 
+	/**
+	 * @param  {string} eventType
+	 */
 	isEventLocked(eventType) {
 		return !!this._ignoreEvents.find(eventTuple => eventTuple[0] === eventType);
 	}

@@ -95,6 +95,8 @@ class Player extends EventTarget {
 		const event = createEvent(Player.Event.DESTROYING);
 		this.dispatchEvent(event);
 
+		// TODO: lock for set methods
+
 		Object.values(this._nextEvents).forEach(task => task.reject());
 		this._nextEvents = null;
 
@@ -102,6 +104,7 @@ class Player extends EventTarget {
 			// TODO: wait for source ready
 		}
 		this._corePlayer.pause();
+		this._corePlayer.resetSource();
 		this._corePlayer.destroy();
 		this._corePlayer = null;
 		this._src = null;

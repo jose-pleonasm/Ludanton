@@ -347,6 +347,9 @@ class NativePlayer {
 
 		this._source = null;
 
+		Array.from(this._element.querySelectorAll('source')).forEach(elem => {
+			elem.parentNode.removeChild(elem);
+		});
 		this._element.removeAttribute('src');
 		try {
 			this.load();
