@@ -153,6 +153,11 @@ class NativePlayer {
 		this._eventManager.destroy();
 		this._destroyed = true;
 		this._element = null;
+		this._source = null;
+		this._transferEvent = null;
+		this._eventMap = null;
+		this._eventManager = null;
+		this._logger = null;
 	}
 
 	toString() {

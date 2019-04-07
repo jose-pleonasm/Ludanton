@@ -96,7 +96,7 @@ class Player extends EventTarget {
 		const event = createEvent(Player.Event.DESTROYING);
 		this.dispatchEvent(event);
 
-		// TODO: lock for set methods
+		// TODO: remove locker
 
 		Object.values(this._nextEvents).forEach(task => task.reject());
 		this._nextEvents = null;
