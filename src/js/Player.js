@@ -29,7 +29,7 @@ class Player extends EventTarget {
 	constructor(element) {
 		super();
 
-		this._handleEvent = this._handleEvent.bind(this);
+		this._handleNativeEvent = this._handleNativeEvent.bind(this);
 
 		/**
 		 * @type {string}
@@ -44,7 +44,7 @@ class Player extends EventTarget {
 		/**
 		 * @type {NativePlayer}
 		 */
-		this._corePlayer = new NativePlayer(element, this._handleEvent);
+		this._corePlayer = new NativePlayer(element, this._handleNativeEvent);
 
 		/**
 		 * @type {Configuration}
@@ -356,11 +356,11 @@ class Player extends EventTarget {
 
 	/**
 	 * @private
-	 * @param  {string} eventName
+	 * @param  {Event} event
 	 * @param  {*} [data]
 	 */
-	_handleEvent(eventName, data) {
-		const type = Player.Event[eventName.toUpperCase()];
+	_handleNativeEvent(event, data) {
+		const type = Player.Event[event.type.toUpperCase()];
 		const detail = {};
 
 		switch (type) {

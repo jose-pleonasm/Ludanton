@@ -1,4 +1,5 @@
 'use strict';
+import { DEBUG } from '../settings.js';
 import LudantonError from '../utils/Error.js';
 import EventManager from '../utils/EventManager.js';
 import { createLocalId } from '../utils/general.js';
@@ -39,7 +40,16 @@ class NativePlayer {
 		/**
 		 * @type {Function}
 		 */
-		this._emit = eventHandler;
+		this._transferEvent = DEBUG ? new Proxy(eventHandler, {
+			apply: (target, thisArg, argumentsList) => {
+				const [event] = argumentsList;
+				if (this._logger) {
+					this._logger.trace(`@${event.type}`, event);
+				}
+
+				target(...argumentsList);
+			}
+		}) : eventHandler;
 
 		/**
 		 * @type {string}
@@ -471,19 +481,6 @@ class NativePlayer {
 			this._playReject = null;
 			this._playResolve = null;
 		}
-	}
-
-	/**
-	 * @private
-	 * @param  {Event} event
-	 * @param  {*} [data]
-	 */
-	_transferEvent(event, data) {
-		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
-		}
-
-		this._emit(event.type, data);
 	}
 
 	/**
