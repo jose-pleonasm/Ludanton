@@ -3,37 +3,35 @@ import { isEqualObject } from './utils.js';
 import { mediaEventsList } from './events.js';
 
 /* selectors */
-const source = (player, corePlayer, element) => ({
+const source = (player, element) => ({
 	currentSrc: element.currentSrc,
 	src: element.src,
 	srcObject: element.srcObject,
 	videoTracks: element.videoTracks,
 	audioTracks: element.audioTracks,
-	currentSource: corePlayer.getSource(),
+	currentSource: player._corePlayer.getSource(),
 });
 
-const time = (player, corePlayer, element) => ({
+const time = (player, element) => ({
 	currentTime: element.currentTime,
 });
 
-const condition = (player, corePlayer, element) => ({
+const condition = (player, element) => ({
 	networkState: element.networkState,
 	readyState: element.readyState,
 });
 
-const playback = (player, corePlayer, element) => ({
+const playback = (player, element) => ({
 	paused: element.paused,
 	seeking: element.seeking,
 	ended: element.ended,
 	playbackRate: element.playbackRate,
-	playbackQuality: corePlayer.getVideoPlaybackQuality(),
+	playbackQuality: player._corePlayer.getVideoPlaybackQuality(),
 });
 
-const media = (player, corePlayer, element) => ({
+const media = (player, element) => ({
 	duration: element.duration,
 });
-
-export const EVENT_CHANGE = 'change';
 
 export class Inspector extends EventTarget {
 	constructor(config) {
@@ -51,7 +49,7 @@ export class Inspector extends EventTarget {
 		this._listeners = [];
 		this._relEvents = mediaEventsList;
 
-		this.update = this.update.bind(this);
+		this.track = this.track.bind(this);
 	}
 
 	destroy() {
@@ -59,13 +57,12 @@ export class Inspector extends EventTarget {
 			clearInterval(this._intervalId);
 		}
 		this._relEvents.forEach(
-			eventType => this._element.removeEventListener(eventType, this.update)
+			eventType => this._element.removeEventListener(eventType, this.track)
 		);
 	}
 
 	set(player, element) {
 		this._player = player;
-		this._corePlayer = player._corePlayer;
 		this._element = element;
 
 		this._init();
@@ -73,11 +70,11 @@ export class Inspector extends EventTarget {
 
 	getState() {
 		return {
-			...time(this._player, this._corePlayer, this._element),
-			...source(this._player, this._corePlayer, this._element),
-			...condition(this._player, this._corePlayer, this._element),
-			...playback(this._player, this._corePlayer, this._element),
-			...media(this._player, this._corePlayer, this._element),
+			...time(this._player, this._element),
+			...source(this._player, this._element),
+			...condition(this._player, this._element),
+			...playback(this._player, this._element),
+			...media(this._player, this._element),
 		};
 	}
 
@@ -100,26 +97,31 @@ export class Inspector extends EventTarget {
 		return this.getHistory(Inspector.myMask);
 	}
 
-	update(event) {
-		const detail = this.getState();
+	inspect(event = null) {
+		return {
+			...this.getState(),
+			eventType: event ? event.type : '',
+		};
+	}
 
-		detail.eventType = event ? event.type : '';
+	track(event = null) {
+		const detail = this.inspect(event);
 
 		if (this._filter(detail)) {
 			return;
 		}
 
 		this.history.push(detail);
-		this.dispatchEvent(new CustomEvent(EVENT_CHANGE, { detail }));
+		this.dispatchEvent(new CustomEvent(Inspector.EVENT_UPDATE, { detail }));
 	}
 
 	_init() {
-		this.update();
+		this.track();
 		if (this._config.interval) {
-			this._intervalId = setInterval(this.update, this._config.interval);
+			this._intervalId = setInterval(this.track, this._config.interval);
 		}
 		this._relEvents.forEach(
-			eventType => this._element.addEventListener(eventType, this.update)
+			eventType => this._element.addEventListener(eventType, this.track)
 		);
 	}
 
@@ -128,6 +130,8 @@ export class Inspector extends EventTarget {
 		return isEqualObject(state, prevState);
 	}
 }
+
+Inspector.EVENT_UPDATE = 'update';
 
 Inspector.myMask = [
 	'eventType',

@@ -5,6 +5,8 @@ import { generateId } from '../utils/general.js';
 
 /**
  * NativePlayer.
+ *
+ * Low level player.
  */
 class NativePlayer {
 	static _getVideo() {

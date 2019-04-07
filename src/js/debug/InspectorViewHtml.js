@@ -28,7 +28,7 @@ export class InspectorViewHtml {
 		});
 
 		element.appendChild(this._container);
-		inspector.addEventListener('change', this._handleChange);
+		inspector.addEventListener(inspector.constructor.EVENT_UPDATE, this._handleChange);
 	}
 
 	_handleChange(event) {
