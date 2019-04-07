@@ -3,12 +3,15 @@ import { dom, readyStateCodeToText, networkStateCodeToText } from './utils.js';
 import './inspector.css';
 
 export class InspectorViewHtml {
-	constructor(inspector, element) {
+	constructor(inspector, element, options = {}) {
 		this._handleChange = this._handleChange.bind(this);
 		this._set = this._set.bind(this);
 
 		this._container = window.document.createElement('section');
 		this._container.className = 'inspector';
+		this._options = {
+			showProperties: options.showProperties ? options.showProperties : showProperties,
+		};
 		this._dom = {};
 		this._cache = {};
 
@@ -33,13 +36,18 @@ export class InspectorViewHtml {
 
 	_handleChange(event) {
 		const state = event.detail;
-		this._set(state, 'paused');
-		this._set(state, 'seeking');
-		this._set(state, 'readyState', readyStateCodeToText);
-		this._set(state, 'networkState', networkStateCodeToText);
-		this._set(state, 'currentTime');
-		this._set(state, 'currentSource.src');
-		this._set(state, 'currentSrc');
+		const hasToShow = (name) => this._options.showProperties.includes(name);
+
+		hasToShow('paused') && this._set(state, 'paused');
+		hasToShow('seeking') && this._set(state, 'seeking');
+		hasToShow('ended') && this._set(state, 'ended');
+		hasToShow('readyState') && this._set(state, 'readyState', readyStateCodeToText);
+		hasToShow('networkState') && this._set(state, 'networkState', networkStateCodeToText);
+		hasToShow('currentTime') && this._set(state, 'currentTime');
+		hasToShow('videoWidth') && this._set(state, 'videoWidth');
+		hasToShow('videoHeight') && this._set(state, 'videoHeight');
+		hasToShow('currentSrc') && this._set(state, 'currentSrc');
+		hasToShow('currentSource.src') && this._set(state, 'currentSource.src');
 	}
 
 	_set(state, path, formatter = i => i, domOptions) {
@@ -52,6 +60,19 @@ export class InspectorViewHtml {
 		addElementToNode(this._dom[path], createOutputInput(path, formatter(value), domOptions));
 	}
 }
+
+const showProperties = [
+	'paused',
+	'seeking',
+	'ended',
+	'readyState',
+	'networkState',
+	'currentTime',
+	'videoWidth',
+	'videoHeight',
+	'currentSource.src',
+	'currentSrc',
+];
 
 const makeSafeString = (s) => s.replace('.', '-');
 

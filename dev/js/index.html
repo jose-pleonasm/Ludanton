@@ -25,7 +25,21 @@ const player = new Player(element);
 const inspector = new Inspector();
 const inspectorView = new InspectorView(
 	inspector,
-	document.querySelector('#view')
+	document.querySelector('#view'),
+	{
+		showProperties: [
+			'paused',
+			'seeking',
+			'ended',
+			'readyState',
+			'networkState',
+			'currentTime',
+			'videoWidth',
+			'videoHeight',
+			'currentSource.src',
+			'currentSrc',
+		],
+	}
 );
 
 inspector.set(player, element);
@@ -77,6 +91,6 @@ player.play();
 // }, 5e3);
 
 	</script>
-	<a href="./test.html">Link</a>
+	<a href="https://www.seznam.cz">Link</a>
 </body>
 </html>

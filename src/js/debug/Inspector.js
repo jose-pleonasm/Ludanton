@@ -21,6 +21,12 @@ const condition = (player, element) => ({
 	readyState: element.readyState,
 });
 
+const error = (player, element) => ({
+	error: element.error
+		? { code: element.error.code, message: element.error.message, toString: () => element.error.message }
+		: null,
+});
+
 const playback = (player, element) => ({
 	paused: element.paused,
 	seeking: element.seeking,
@@ -31,6 +37,8 @@ const playback = (player, element) => ({
 
 const media = (player, element) => ({
 	duration: element.duration,
+	videoWidth: element.videoWidth,
+	videoHeight: element.videoHeight,
 });
 
 export class Inspector extends EventTarget {
@@ -75,6 +83,7 @@ export class Inspector extends EventTarget {
 			...condition(this._player, this._element),
 			...playback(this._player, this._element),
 			...media(this._player, this._element),
+			...error(this._player, this._element),
 		};
 	}
 
@@ -142,4 +151,5 @@ Inspector.myMask = [
 	'networkState',
 	'currentSrc',
 	'currentSource',
+	'error',
 ];
