@@ -1,7 +1,7 @@
 'use strict';
 import LudantonError from '../utils/Error.js';
 import EventManager from '../utils/EventManager.js';
-import { generateId } from '../utils/general.js';
+import { createLocalId } from '../utils/general.js';
 
 /**
  * NativePlayer.
@@ -44,7 +44,7 @@ class NativePlayer {
 		/**
 		 * @type {string}
 		 */
-		this._id = generateId();
+		this._id = createLocalId();
 
 		/**
 		 * @type {(Source|null)}

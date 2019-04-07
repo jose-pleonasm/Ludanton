@@ -1,9 +1,10 @@
 'use strict';
-import { EXT_TYPE_MAP, NS } from '../settings.js';
+import { EXT_TYPE_MAP, PACKAGE_CODE } from '../settings.js';
 
 
 const QUALITY_DESCRIPTOR_PATTERN = /([0-9]+)(p)/i;
-let counter = 0;
+let scope = Date.now().toString(16);
+let counter = 10000000;
 
 /**
  * getTypeByFilename.
@@ -41,14 +42,18 @@ export const parseQualityDescriptor = (descriptor) => {
 };
 
 /**
- * generateId.
+ * createLocalId.
  * @param  {string} [namespace]
  * @return {string}
  */
-export const generateId = (namespace = NS) => {
-	counter = counter < Number.MAX_SAFE_INTEGER ? counter : 0;
+export const createLocalId = () => {
+	if (counter === 11111111) {
+		scope = Date.now().toString(16);
+		counter = 10000000;
+	}
 
-	return `${namespace}-${Date.now()}-${counter++}`;
+	counter++;
+	return `${PACKAGE_CODE}${scope}${counter.toString(16)}`;
 };
 
 /**

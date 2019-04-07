@@ -4,7 +4,7 @@ import {
 } from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
-import { getTypeByFilename, generateId } from './utils/general.js';
+import { getTypeByFilename, createLocalId } from './utils/general.js';
 import { createSource, getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
 import createEvent from './utils/createEvent.js';
@@ -34,7 +34,7 @@ class Player extends EventTarget {
 		/**
 		 * @type {string}
 		 */
-		this._id = element.id || generateId();
+		this._id = element.id || createLocalId();
 
 		/**
 		 * @type {(null|MediaUrl|MediaObject|Array<MediaObject>)}

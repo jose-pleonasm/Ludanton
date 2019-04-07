@@ -17,14 +17,4 @@ export const GET_CURRENT_SRC_INTERVAL = 200;
 
 export const GET_CURRENT_SRC_TIMEOUT = 2e3;
 
-export const NS = (() => {
-	if (typeof window !== 'undefined' && window && window.location) {
-		return window.location.host.replace(/[^\w]/g, '');
-
-	} else if (typeof process !== 'undefined' && process && process.pid) {
-		return String(process.pid);
-
-	} else {
-		return 'ns';
-	}
-})();
+export const PACKAGE_CODE = 'luda';
