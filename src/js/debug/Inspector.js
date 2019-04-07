@@ -67,6 +67,7 @@ export class Inspector extends EventTarget {
 		this._relEvents = mediaEventsList;
 
 		this.track = this.track.bind(this);
+		this.destroy = this.destroy.bind(this);
 	}
 
 	destroy() {
@@ -135,6 +136,8 @@ export class Inspector extends EventTarget {
 	}
 
 	_init() {
+		this._player.addEventListener(this._player.constructor.Event.DESTROYING, this.destroy);
+
 		this.track();
 		if (this._config.interval) {
 			this._intervalId = setInterval(this.track, this._config.interval);
