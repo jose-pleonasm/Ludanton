@@ -55,6 +55,7 @@ class Player extends EventTarget {
 					Player.Event.TIMEUPDATE,
 					Player.Event.SEEKING,
 					Player.Event.SEEKED,
+					Player.Event.PROGRESS,
 					Player.Event.STALLED,
 					Player.Event.SUSPEND,
 					Player.Event.WAITING,
@@ -287,6 +288,11 @@ class Player extends EventTarget {
 	async stop() {
 		logger.trace('#stop');
 		this._locker.lock('stop');
+
+		const currentTime = this._corePlayer.getCurrentTime();
+		const duration = this._corePlayer.getDuration();
+		const ended = this._corePlayer.isEnded();
+
 		this._corePlayer.pause();
 
 		const seeked = this._nextEvent(Player.Event.SEEKED);
@@ -294,7 +300,13 @@ class Player extends EventTarget {
 		await seeked;
 
 		this._locker.unlock('stop');
-		logger.trace('#stop - done');
+
+		this.dispatchEvent(createEvent(Player.Event.STOP, {
+			level: Player.LEVEL,
+			currentTime,
+			duration,
+			ended,
+		}));
 	}
 
 	/**
@@ -512,6 +524,7 @@ const EVENT = {
 	STALLED: 'stalled',
 	SUSPEND: 'suspend',
 	WAITING: 'waiting',
+	STOP: 'stop',
 	DESTROYING: 'destroying',
 
 	/**
