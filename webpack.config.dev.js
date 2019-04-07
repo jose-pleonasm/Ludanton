@@ -1,16 +1,18 @@
 /*eslint-env node */
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 const htmlTemplate = './dev/html/index.html';
 const jsTemplate = './dev/js/index.html';
 
 const htmlPlugin = new HtmlWebPackPlugin({
-	template: jsTemplate,
+	template: htmlTemplate,
 	filename: './index.html',
 	inject: 'head',
 	lang: 'cs',
 });
+const envPlugin = new webpack.EnvironmentPlugin(['NODE_ENV']);
 
 module.exports = {
 	mode: 'development',
@@ -48,5 +50,6 @@ module.exports = {
 	},
 	plugins: [
 		htmlPlugin,
+		envPlugin,
 	],
 };

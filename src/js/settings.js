@@ -1,6 +1,6 @@
 'use strict';
 
-export const DEBUG = true;
+export const DEBUG = process.env.NODE_ENV === 'development';
 
 export const EXT_TYPE_MAP = Object.freeze({
 	'mp4': 'video/mp4',
