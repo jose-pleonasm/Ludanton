@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "dev": "NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
-    "build": "npm run transform && npm run browserify",
+    "build": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "build-old": "npm run transform && npm run browserify",
     "doc": "./node_modules/.bin/jsdoc -c ./jsdoc.json -r ./src/js/*.js ./src/js/**/*.js",
     "doc-public": "./node_modules/.bin/jsdoc -c ./jsdoc.json -r ./src/js/Player.js",
     "transform": "babel src/js --out-dir dist --source-map",
