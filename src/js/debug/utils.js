@@ -1,4 +1,4 @@
-import { READY_STATE_MAP, NETWORK_STATE_MAP } from './constants.js';
+import { READY_STATE_MAP, NETWORK_STATE_MAP, ERROR_CODE_MAP } from './constants.js';
 
 /**
  * @param  {*} obj1
@@ -42,6 +42,12 @@ export const readyStateCodeToText = (code) => READY_STATE_MAP[code];
  * @return {string}
  */
 export const networkStateCodeToText = (code) => NETWORK_STATE_MAP[code];
+
+/**
+ * @param  {number} code
+ * @return {string}
+ */
+export const errorCodeToText = (code) => ERROR_CODE_MAP[code] || code;
 
 /**
  * @param  {string}                        name

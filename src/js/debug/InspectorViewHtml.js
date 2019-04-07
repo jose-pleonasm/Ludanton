@@ -1,5 +1,5 @@
 import getValue from 'get-value';
-import { dom, readyStateCodeToText, networkStateCodeToText } from './utils.js';
+import { dom, readyStateCodeToText, networkStateCodeToText, errorCodeToText } from './utils.js';
 import './inspector.css';
 
 export class InspectorViewHtml {
@@ -48,6 +48,7 @@ export class InspectorViewHtml {
 		hasToShow('videoHeight') && this._set(state, 'videoHeight');
 		hasToShow('currentSrc') && this._set(state, 'currentSrc');
 		hasToShow('currentSource.src') && this._set(state, 'currentSource.src');
+		hasToShow('currentSource.src') && state.error && this._set(state, 'error', errorCodeToText);
 	}
 
 	_set(state, path, formatter = i => i, domOptions) {

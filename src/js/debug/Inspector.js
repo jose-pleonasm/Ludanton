@@ -23,7 +23,11 @@ const condition = (player, element) => ({
 
 const error = (player, element) => ({
 	error: element.error
-		? { code: element.error.code, message: element.error.message, toString: () => element.error.message }
+		? {
+			code: element.error.code,
+			message: element.error.message,
+			toString: () => element.error.message || element.error.code,
+		}
 		: null,
 });
 
