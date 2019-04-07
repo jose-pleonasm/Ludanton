@@ -1,13 +1,15 @@
 'use strict';
 import {
 	RESOLUTION_FACTOR, GET_CURRENT_SRC_TIMEOUT, GET_CURRENT_SRC_INTERVAL,
+	LEVELS,
 } from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
-import { getTypeByFilename, createLocalId } from './utils/general.js';
+import { getTypeByFilename, createLocalId, nextEvent } from './utils/general.js';
 import { createSource, getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
 import createEvent from './utils/createEvent.js';
+import Locker from './utils/Locker.js';
 import NativePlayer from './core/NativePlayer.js';
 import logging from './utils/logging.js';
 
@@ -42,6 +44,30 @@ class Player extends EventTarget {
 		this._src = null;
 
 		/**
+		 * @type {Locker}
+		 */
+		this._locker = new Locker({
+			stop: {
+				events: [
+					Player.Event.PAUSE,
+					Player.Event.PLAY,
+					Player.Event.PLAYING,
+					Player.Event.TIMEUPDATE,
+					Player.Event.SEEKING,
+					Player.Event.SEEKED,
+					Player.Event.STALLED,
+					Player.Event.SUSPEND,
+					Player.Event.WAITING,
+				],
+			},
+		});
+
+		/**
+		 * @type {Object<string, { promise: Object, resolve: Function, reject: Function }>}
+		 */
+		this._nextEvents = {};
+
+		/**
 		 * @type {NativePlayer}
 		 */
 		this._corePlayer = new NativePlayer(element, this._handleNativeEvent);
@@ -68,6 +94,9 @@ class Player extends EventTarget {
 	destroy() {
 		const event = createEvent(Player.Event.DESTROYING);
 		this.dispatchEvent(event);
+
+		Object.values(this._nextEvents).forEach(task => task.reject());
+		this._nextEvents = null;
 
 		if (this._src && !this._corePlayer.getSource()) {
 			// TODO: wait for source ready
@@ -248,6 +277,24 @@ class Player extends EventTarget {
 	}
 
 	/**
+	 * Stops playback of the source.
+	 *
+	 * Resets playback.
+	 */
+	async stop() {
+		logger.trace('#stop');
+		this._locker.lock('stop');
+		this._corePlayer.pause();
+
+		const seeked = this._nextEvent(Player.Event.SEEKED);
+		this._corePlayer.seek(0);
+		await seeked;
+
+		this._locker.unlock('stop');
+		logger.trace('#stop - done');
+	}
+
+	/**
 	 * @param {number} time
 	 */
 	seek(time) {
@@ -361,7 +408,13 @@ class Player extends EventTarget {
 	 */
 	_handleNativeEvent(event, data) {
 		const type = Player.Event[event.type.toUpperCase()];
-		const detail = {};
+		const level = this._locker.isEventLocked(type)
+			? this._corePlayer.constructor.LEVEL : Player.LEVEL;
+		const detail = {
+			level,
+		};
+
+		this._resolveNextEvent(type);
 
 		switch (type) {
 			case Player.Event.VOLUMECHANGE:
@@ -408,6 +461,27 @@ class Player extends EventTarget {
 
 		return event;
 	}
+
+	_nextEvent(eventType) {
+		if (!this._nextEvents[eventType]) {
+			this._nextEvents[eventType] = {};
+			this._nextEvents[eventType].promise = new Promise(
+				(resolve, reject) => {
+					this._nextEvents[eventType].resolve = resolve;
+					this._nextEvents[eventType].reject = reject;
+				}
+			);
+		}
+		return this._nextEvents[eventType].promise;
+	}
+
+	_resolveNextEvent(eventType) {
+		const task = this._nextEvents[eventType];
+		if (task) {
+			task.resolve();
+			this._nextEvents[eventType] = null;
+		}
+	}
 }
 
 /**
@@ -446,6 +520,12 @@ const EVENT = {
 };
 
 Player.Event = Object.freeze(EVENT);
+
+/**
+ * @readonly
+ * @type {number}
+ */
+Player.LEVEL = LEVELS.MAIN;
 
 
 export default Player;

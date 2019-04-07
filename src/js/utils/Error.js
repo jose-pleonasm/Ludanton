@@ -70,6 +70,8 @@ const CATEGORY = {
 
 	/** Errors parsing or processing audio or video streams. */
 	'MEDIA': 'MEDIA',
+
+	'LOGIC': 'LOGIC',
 };
 
 LudantonError.Category = Object.freeze(CATEGORY);
@@ -97,6 +99,16 @@ const CODE = {
 	 * {Object} error.data[2] originalError
 	 */
 	'SOURCE_MEDIA': 'SOURCE_MEDIA',
+
+	/**
+	 * {Source} error.data[0] blacklist name
+	 */
+	'CONFIG_INVALID_BLACKLIST_ENABLE': 'CONFIG_INVALID_BLACKLIST_ENABLE',
+
+	/**
+	 * {Source} error.data[0] blacklist name
+	 */
+	'CONFIG_INVALID_BLACKLIST_DISABLE': 'CONFIG_INVALID_BLACKLIST_DISABLE',
 };
 
 LudantonError.Code = Object.freeze(CODE);

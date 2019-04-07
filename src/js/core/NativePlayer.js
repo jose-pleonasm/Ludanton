@@ -1,5 +1,5 @@
 'use strict';
-import { DEBUG } from '../settings.js';
+import { DEBUG, LEVELS } from '../settings.js';
 import LudantonError from '../utils/Error.js';
 import EventManager from '../utils/EventManager.js';
 import { createLocalId } from '../utils/general.js';
@@ -523,6 +523,12 @@ class NativePlayer {
 		this._transferEvent(event, error);
 	}
 }
+
+/**
+ * @readonly
+ * @type {number}
+ */
+NativePlayer.LEVEL = LEVELS.NATIVE;
 
 NativePlayer._video = null;
 

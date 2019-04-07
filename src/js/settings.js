@@ -18,3 +18,8 @@ export const GET_CURRENT_SRC_INTERVAL = 200;
 export const GET_CURRENT_SRC_TIMEOUT = 2e3;
 
 export const PACKAGE_CODE = 'luda';
+
+export const LEVELS = {
+	NATIVE: 1,
+	MAIN: 2,
+};
