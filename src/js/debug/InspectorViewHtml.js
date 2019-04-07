@@ -38,6 +38,8 @@ export class InspectorViewHtml {
 		const state = event.detail;
 		const hasToShow = (name) => this._options.showProperties.includes(name);
 
+		hasToShow('autoplay') && this._set(state, 'autoplay');
+		hasToShow('preload') && this._set(state, 'preload');
 		hasToShow('paused') && this._set(state, 'paused');
 		hasToShow('seeking') && this._set(state, 'seeking');
 		hasToShow('ended') && this._set(state, 'ended');
@@ -63,6 +65,8 @@ export class InspectorViewHtml {
 }
 
 const showProperties = [
+	'autoplay',
+	'preload',
 	'paused',
 	'seeking',
 	'ended',

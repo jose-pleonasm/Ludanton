@@ -45,6 +45,11 @@ const media = (player, element) => ({
 	videoHeight: element.videoHeight,
 });
 
+const setting = (player, element) => ({
+	autoplay: element.autoplay,
+	preload: element.preload,
+});
+
 export class Inspector extends EventTarget {
 	constructor(config) {
 		super();
@@ -82,6 +87,7 @@ export class Inspector extends EventTarget {
 
 	getState() {
 		return {
+			...setting(this._player, this._element),
 			...time(this._player, this._element),
 			...source(this._player, this._element),
 			...condition(this._player, this._element),
