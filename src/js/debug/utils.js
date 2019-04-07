@@ -1,5 +1,10 @@
 import { READY_STATE_MAP, NETWORK_STATE_MAP } from './constants.js';
 
+/**
+ * @param  {*} obj1
+ * @param  {*} obj2
+ * @return {boolean} True if objects are equal. False otherwise.
+ */
 export const isEqualObject = (obj1, obj2) => {
 	if (obj1 === obj2) {
 		return true;
@@ -26,8 +31,16 @@ export const isEqualObject = (obj1, obj2) => {
 	});
 };
 
+/**
+ * @param  {number} code
+ * @return {string}
+ */
 export const readyStateCodeToText = (code) => READY_STATE_MAP[code];
 
+/**
+ * @param  {number} code
+ * @return {string}
+ */
 export const networkStateCodeToText = (code) => NETWORK_STATE_MAP[code];
 
 /**

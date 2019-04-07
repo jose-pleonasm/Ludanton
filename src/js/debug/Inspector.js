@@ -2,6 +2,7 @@ import EventTarget from '../utils/EventTarget.js';
 import { isEqualObject } from './utils.js';
 import { mediaEventsList } from './events.js';
 
+/* selectors */
 const source = (player, corePlayer, element) => ({
 	currentSrc: element.currentSrc,
 	src: element.src,
