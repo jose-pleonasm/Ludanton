@@ -492,7 +492,7 @@ class NativePlayer {
 	 */
 	_handlePlaying(event) {
 		if (this._logger) {
-			this._logger.trace(`@${event.type}`, event);
+			this._logger.trace('#_handlePlaying', event);
 		}
 
 		this._resolvePlayPromise();
