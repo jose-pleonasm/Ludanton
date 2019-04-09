@@ -14,6 +14,9 @@ Checklist
 https://frontendchecklist.io/
 
 
+JS modules
+==========
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#Module_fallback
 
 
 
