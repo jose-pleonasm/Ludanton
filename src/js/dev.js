@@ -5,17 +5,12 @@ import VideoModel from './videomock/videomodel.js';
 import LudantonError from './utils/Error.js';
 import LudantonEventTarget from './utils/EventTarget.js';
 import { createSource } from './utils/source.js';
-import { Inspector } from './debug/Inspector.js';
-import { InspectorViewConsole } from './debug/InspectorViewConsole.js';
-import { InspectorViewHtml } from './debug/InspectorViewHtml.js';
+import debug from './debug/index.js';
 
-export default Object.assign(ludanton, {
+export default Object.assign(ludanton, debug, {
 	VideoProperties,
 	VideoModel,
 	LudantonError,
 	LudantonEventTarget,
 	createSource,
-	Inspector,
-	InspectorViewConsole,
-	InspectorViewHtml,
 });
