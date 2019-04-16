@@ -45,18 +45,22 @@ const inspectorView = new InspectorView(
 
 inspector.set(player, element);
 
-player.addEventListener(Player.Event.PLAY, event => {
-	console.log(event);
-});
+// player.addEventListener(Player.Event.PLAY, event => {
+// 	console.log(event);
+// });
 
-player.addEventListener(Player.Event.PLAYING, event => {
-	console.log(event);
-});
+// player.addEventListener(Player.Event.PLAYING, event => {
+// 	console.log(event);
+// });
 
-player.addEventListener(Player.Event.ERROR, event => {
-	console.error(event.detail);
-	console.debug('code', event.detail.code);
-	console.debug('data', event.detail.data);
+// player.addEventListener(Player.Event.ERROR, event => {
+// 	console.error(event.detail);
+// 	console.debug('code', event.detail.code);
+// 	console.debug('data', event.detail.data);
+// });
+
+player.addEventListener(Player.Event.STOP, event => {
+	console.log(event, player.getCurrentTime());
 });
 
 /*

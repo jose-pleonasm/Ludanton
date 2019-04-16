@@ -27,10 +27,28 @@ const player = new Player(element);
 const inspector = new Inspector({ interval: 100 });
 const inspectorView = new InspectorView(
 	inspector,
-	document.querySelector('#view')
+	document.querySelector('#view'),
+	{
+		showProperties: [
+			'paused',
+			'seeking',
+			'ended',
+			'readyState',
+			'networkState',
+			'currentTime',
+			'videoWidth',
+			'videoHeight',
+			'currentSource.src',
+			'currentSrc',
+		],
+	}
 );
 
 inspector.set(player, element);
+
+player.addEventListener(Player.Event.CANPLAY, event => {
+	console.log('>> CANPLAY', event, player.isPaused());
+});
 
 player.addEventListener(Player.Event.PLAY, event => {
 	console.log('>> PLAY', event, player.isPaused());
@@ -38,6 +56,14 @@ player.addEventListener(Player.Event.PLAY, event => {
 
 player.addEventListener(Player.Event.PLAYING, event => {
 	console.log('>> PLAYING', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.TIMEUPDATE, event => {
+	console.log('>> TIMEUPDATE', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.SEEKED, event => {
+	console.log('>> SEEKED', event, player.isPaused());
 });
 
 player.addEventListener(Player.Event.ERROR, event => {
