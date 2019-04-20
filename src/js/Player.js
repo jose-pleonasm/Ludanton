@@ -10,16 +10,20 @@ import { createSource, getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
 import createEvent from './utils/createEvent.js';
 import Locker from './utils/Locker.js';
-import NativePlayer from './core/NativePlayer.js';
+import { techPlayerFactory } from './core/techPlayerFactory.js';
 import logging from './utils/logging.js';
 
 
 /**
  * @typedef {Object} Configuration
  * @property {Resolution} screenResolution
+ * @property {Function} techPlayerFactory
  */
 
 const logger = logging.getLogger('channel:main.Player');
+
+const getConfigValue = (currentValue, defaultValue) =>
+	typeof currentValue !== 'undefined' ? currentValue : defaultValue;
 
 /**
  * Player
@@ -27,11 +31,20 @@ const logger = logging.getLogger('channel:main.Player');
 class Player extends EventTarget {
 	/**
 	 * @param  {HTMLVideoElement} element
+	 * @param  {Configuration} [config]
 	 */
-	constructor(element) {
+	constructor(element, config = {}) {
 		super();
 
 		this._handleNativeEvent = this._handleNativeEvent.bind(this);
+
+		/**
+		 * @type {Configuration}
+		 */
+		this._cfg = {
+			screenResolution: getConfigValue(config.screenResolution, env.getScreenResolution()),
+			techPlayerFactory: getConfigValue(config.techPlayerFactory, techPlayerFactory),
+		};
 
 		/**
 		 * @type {string}
@@ -71,14 +84,7 @@ class Player extends EventTarget {
 		/**
 		 * @type {NativePlayer}
 		 */
-		this._corePlayer = new NativePlayer(element, this._handleNativeEvent);
-
-		/**
-		 * @type {Configuration}
-		 */
-		this._cfg = {
-			screenResolution: env.getScreenResolution(),
-		};
+		this._corePlayer = this._cfg.techPlayerFactory(element, this._handleNativeEvent);
 
 		this._corePlayer.setLogger(
 			logging.getLogger('channel:main.NativePlayer')
@@ -89,8 +95,6 @@ class Player extends EventTarget {
 
 	/**
 	 * Destructor.
-	 *
-	 * After destruction, a NativePlayer instance cannot be used again.
 	 */
 	destroy() {
 		const event = createEvent(Player.Event.DESTROYING);
