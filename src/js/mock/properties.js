@@ -1,6 +1,6 @@
 'use strict';
 
-const Node = {
+export const Node = {
 	baseURI: '', // String
 	childNodes: [], // NodeList
 	firstChild: null, // Node
@@ -16,7 +16,7 @@ const Node = {
 	textContent: null, // Object
 };
 
-const Element = Object.assign({}, Node, {
+export const Element = Object.assign({}, Node, {
 	attributes: [], // NamedNodeMap
 	childElementCount: 0, // Number
 	classList: [], // DOMTokenList
@@ -44,7 +44,7 @@ const Element = Object.assign({}, Node, {
 	slot: '', // String
 });
 
-const HTMLElement = Object.assign({}, Element, {
+export const HTMLElement = Object.assign({}, Element, {
 	accessKey: '', // String
 	accessKeyLabel: '', // String
 	contentEditable: 'inherit', // String
@@ -68,7 +68,7 @@ const HTMLElement = Object.assign({}, Element, {
 	translate: true, // Boolean
 });
 
-const HTMLMediaElement = Object.assign({}, HTMLElement, {
+export const HTMLMediaElement = Object.assign({}, HTMLElement, {
 	audioTracks: [], // AudioTrackList
 	autoplay: false, // Boolean
 	buffered: {}, // TimeRanges
@@ -102,7 +102,7 @@ const HTMLMediaElement = Object.assign({}, HTMLElement, {
 	volume: 1, // Number
 });
 
-const HTMLVideoElement = Object.assign({}, HTMLMediaElement, {
+export const HTMLVideoElement = Object.assign({}, HTMLMediaElement, {
 	height: 0, // Number
 	poster: '', // String
 	videoHeight: 0, // Number
@@ -112,20 +112,21 @@ const HTMLVideoElement = Object.assign({}, HTMLMediaElement, {
 	playsInline: false, // Boolean
 });
 
-const videoProperties = Object.assign({}, HTMLVideoElement, {
-	autoplay: false, // Boolean
-	buffered: {}, // TimeRanges
-	controls: false, // Boolean
+export const properties = Object.assign({}, HTMLVideoElement, {
+	// autoplay: false, // Boolean
+	// buffered: {}, // TimeRanges
+	// controls: false, // Boolean
+	// height: 0, // Number
+	// loop: false, // Boolean
+	// muted: false, // Boolean
+	// played: {}, // TimeRanges
+	// preload: '', // String|enum:'none','metadata','auto'
+	// poster: '', // String|URL
+	// src: '', // String|URL
+	// width: 0, // Number
+
 	crossorigin: undefined, // String|enum:'anonymous','use-credentials'
-	height: 0, // Number
-	loop: false, // Boolean
-	muted: false, // Boolean
-	played: {}, // TimeRanges
-	preload: '', // String|enum:'none','metadata','auto'
-	poster: '', // String|URL
-	src: '', // String|URL
-	width: 0, // Number
 	playsinline: undefined, // Boolean
 });
 
-export default videoProperties;
+export default properties;

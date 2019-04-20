@@ -25,7 +25,7 @@ console.log(video.play);
 console.log(video.addEventListener);
 */
 
-const element = new Ludanton.VideoModel({...Ludanton.VideoProperties});
+const element = Ludanton.createVideoMock();
 const player = new Ludanton.Player(element);
 
 function foo() {}

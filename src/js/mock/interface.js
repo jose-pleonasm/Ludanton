@@ -1,6 +1,6 @@
 'use strict';
 
-class EventTarget {
+export class EventTarget {
 	addEventListener(type, listener, options) {
 		
 	}
@@ -14,7 +14,7 @@ class EventTarget {
 	}
 }
 
-class Node extends EventTarget {
+export class Node extends EventTarget {
 	constructor(properties) {
 		super();
 		Object.assign(this, properties);
@@ -77,7 +77,7 @@ class Node extends EventTarget {
 	}
 }
 
-class Element extends Node {
+export class Element extends Node {
 	constructor(properties) {
 		super();
 		Object.assign(this, properties);
@@ -205,7 +205,7 @@ class Element extends Node {
 	}
 }
 
-class HTMLElement extends Element {
+export class HTMLElement extends Element {
 	constructor(properties) {
 		super();
 		Object.assign(this, properties);
@@ -224,7 +224,7 @@ class HTMLElement extends Element {
 	}
 }
 
-class HTMLMediaElement extends HTMLElement {
+export class HTMLMediaElement extends HTMLElement {
 	constructor(properties) {
 		super();
 		Object.assign(this, properties);
@@ -272,7 +272,7 @@ class HTMLMediaElement extends HTMLElement {
 	}
 }
 
-class VideoModel extends HTMLMediaElement {
+export class Interface extends HTMLMediaElement {
 	constructor(properties) {
 		super();
 		Object.assign(this, properties);
@@ -284,4 +284,4 @@ class VideoModel extends HTMLMediaElement {
 	}
 }
 
-export default VideoModel;
+export default Interface;
