@@ -10,17 +10,38 @@ import { createSource, getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
 import createEvent from './utils/createEvent.js';
 import Locker from './utils/Locker.js';
+import NullLogger from './utils/NullLogger.js';
 import { techPlayerFactory } from './core/techPlayerFactory.js';
-import logging from './utils/logging.js';
 
+
+/**
+ * Interface for classes that represent a logger.
+ *
+ * @interface Logger
+ */
+/**
+ * @function
+ * @name Logger#debug
+ */
+/**
+ * @function
+ * @name Logger#info
+ */
+/**
+ * @function
+ * @name Logger#warning
+ */
+/**
+ * @function
+ * @name Logger#error
+ */
 
 /**
  * @typedef {Object} Configuration
  * @property {Resolution} screenResolution
  * @property {Function} techPlayerFactory
+ * @property {Logger} logger
  */
-
-const logger = logging.getLogger('channel:main.Player');
 
 const getConfigValue = (currentValue, defaultValue) =>
 	typeof currentValue !== 'undefined' ? currentValue : defaultValue;
@@ -36,6 +57,9 @@ class Player extends EventTarget {
 	constructor(element, config = {}) {
 		super();
 
+		const logger = getConfigValue(config.logger, NullLogger);
+		const loggerGetChild = typeof logger.getChild === 'function';
+
 		this._handleNativeEvent = this._handleNativeEvent.bind(this);
 
 		/**
@@ -44,6 +68,7 @@ class Player extends EventTarget {
 		this._cfg = {
 			screenResolution: getConfigValue(config.screenResolution, env.getScreenResolution()),
 			techPlayerFactory: getConfigValue(config.techPlayerFactory, techPlayerFactory),
+			logger: loggerGetChild ? logger.getChild('Player') : logger,
 		};
 
 		/**
@@ -86,9 +111,7 @@ class Player extends EventTarget {
 		 */
 		this._corePlayer = this._cfg.techPlayerFactory(element, this._handleNativeEvent);
 
-		this._corePlayer.setLogger(
-			logging.getLogger('channel:main.NativePlayer')
-		);
+		this._corePlayer.setLogger(loggerGetChild ? logger.getChild('TechPlayer') : logger);
 
 		this._init();
 	}
@@ -248,12 +271,12 @@ class Player extends EventTarget {
 	 * @param {(MediaUrl|MediaObject|Array<MediaObject>)} src
 	 */
 	setSource(src) {
-		logger.trace('#setSource', [src]);
+		this._cfg.logger.trace('#setSource', [src]);
 		this._src = src;
 
 		const source = createSource(src);
 		const optimalSource = this._getOptimalSource(source);
-		logger.info('optimal source:', optimalSource);
+		this._cfg.logger.info('optimal source:', optimalSource);
 
 		if (!optimalSource) {
 			throw new LudantonError(
@@ -272,7 +295,7 @@ class Player extends EventTarget {
 	 * @return {Promise}
 	 */
 	play() {
-		logger.trace('#play');
+		this._cfg.logger.trace('#play');
 		return this._corePlayer.play();
 	}
 
@@ -280,7 +303,7 @@ class Player extends EventTarget {
 	 * Pauses playback of the source.
 	 */
 	pause() {
-		logger.trace('#pause');
+		this._cfg.logger.trace('#pause');
 		this._corePlayer.pause();
 	}
 
@@ -290,7 +313,7 @@ class Player extends EventTarget {
 	 * Resets playback.
 	 */
 	async stop() {
-		logger.trace('#stop');
+		this._cfg.logger.trace('#stop');
 		this._locker.lock('stop');
 
 		const currentTime = this._corePlayer.getCurrentTime();
@@ -317,12 +340,12 @@ class Player extends EventTarget {
 	 * @param {number} time
 	 */
 	seek(time) {
-		logger.trace('#seek');
+		this._cfg.logger.trace('#seek');
 		this._corePlayer.seek(time);
 	}
 
 	async _init() {
-		logger.trace('#init');
+		this._cfg.logger.trace('#init');
 		const element = this._corePlayer.getElement();
 		const sourceElements = element.src ? [{ src: element.src }] : Array.from(
 			element.getElementsByTagName('source')

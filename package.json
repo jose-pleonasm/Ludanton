@@ -11,7 +11,11 @@
     "doc": "./node_modules/.bin/jsdoc -c ./jsdoc.json -r ./src/js/*.js ./src/js/**/*.js",
     "doc-public": "./node_modules/.bin/jsdoc -c ./jsdoc.json -r ./src/js/Player.js",
     "transform": "babel src/js --out-dir dist --source-map",
-    "browserify": "browserify dist/dev.js --standalone Ludanton > dist/ludanton.js"
+    "browserify": "browserify dist/dev.js --standalone Ludanton > dist/ludanton.js",
+    "build:logging-core": "browserify ./node_modules/py-logging/core/logging.js --s logging > ./tmp.js && uglifyjs tmp.js -c > ./dev/logging.min.js && rm tmp.js",
+    "build:logging-commonkit": "browserify ./node_modules/py-logging/commonkit/index.js --s logging_commonkit > ./tmp.js && uglifyjs tmp.js -c > ./dev/logging_commonkit.min.js && rm tmp.js",
+    "build:logging-browserkit": "browserify ./node_modules/py-logging-browserkit/lib/browserkit.js --s logging_browserkit > ./tmp.js && uglifyjs tmp.js -c > ./dev/logging_browserkit.min.js && rm tmp.js",
+    "build:logging": "npm run build:logging-core && npm run build:logging-commonkit && npm run build:logging-browserkit"
   },
   "repository": {
     "type": "git",
@@ -45,17 +49,18 @@
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.5.0",
+    "py-logging": "^2.5.0",
+    "py-logging-browserkit": "^1.2.0",
     "regenerator-runtime": "^0.11.1",
     "style-loader": "^0.23.1",
     "stylelint": "^9.9.0",
     "stylelint-config-standard": "^18.2.0",
+    "uglifyjs": "^2.4.11",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0",
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "py-logging": "^2.3.0",
-    "py-logging-browserkit": "^1.2.0"
+    "babel-polyfill": "^6.26.0"
   }
 }

@@ -16,7 +16,9 @@
 import Ludanton from '../../src/js/index.js';
 
 const element = document.querySelector('#video');
-const player = new Ludanton.Player(element);
+const player = new Ludanton.Player(element, {
+	logger: console
+});
 
 window.player = player;
 player.addEventListener(Ludanton.Player.Event.ERROR, event => {
