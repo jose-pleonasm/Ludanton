@@ -56,6 +56,10 @@ class Locker {
 		);
 	}
 
+	unlockAll() {
+		this._ignoreEvents = [];
+	}
+
 	/**
 	 * @param  {string} eventType
 	 */

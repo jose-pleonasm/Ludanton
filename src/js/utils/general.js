@@ -61,14 +61,30 @@ export const createLocalId = () => {
  *
  * https://twitter.com/DasSurma/status/1078375282183151617
  *
- * @param  {target} Object
- * @param  {name} string
+ * @param  {Object} target
+ * @param  {string} name
  * @return {Promise<Event>}
  */
 export const nextEvent = (target, name) => {
 	return new Promise(resolve => {
 		target.addEventListener(name, resolve, { once: true });
 	});
+};
+
+/**
+ * makeTimeout.
+ * @param  {number} time time in milliseconds
+ * @param  {string} [msg]
+ * @return {Promise}
+ */
+export const makeTimeout = (time, msg = 'Timeout') => {
+	let timeoutId;
+	const promise = new Promise((resolve, reject) => {
+		timeoutId = setTimeout(reject, time, new Error(msg));
+	});
+	promise.$cancel = () => clearTimeout(timeoutId);
+
+	return promise;
 };
 
 

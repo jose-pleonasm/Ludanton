@@ -5,7 +5,7 @@ import {
 } from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
-import { getTypeByFilename, createLocalId, nextEvent } from './utils/general.js';
+import { getTypeByFilename, createLocalId, makeTimeout } from './utils/general.js';
 import { createSource, getSourceByResolution } from './utils/source.js';
 import env from './utils/env.js';
 import createEvent from './utils/createEvent.js';
@@ -99,6 +99,19 @@ class Player extends EventTarget {
 					Player.Event.WAITING,
 				],
 			},
+			reset: {
+				events: [
+					Player.Event.PAUSE,
+					Player.Event.PLAYING,
+					Player.Event.TIMEUPDATE,
+					Player.Event.SEEKING,
+					Player.Event.SEEKED,
+					Player.Event.PROGRESS,
+					Player.Event.STALLED,
+					Player.Event.SUSPEND,
+					Player.Event.WAITING,
+				],
+			},
 		});
 
 		/**
@@ -175,6 +188,15 @@ class Player extends EventTarget {
 	}
 
 	/**
+	 * Returns current src.
+	 *
+	 * @return {string} URI
+	 */
+	getCurrentSrc() {
+		return this._corePlayer.getCurrentSrc();
+	}
+
+	/**
 	 * @return {number}
 	 */
 	getVideoWidth() {
@@ -207,6 +229,20 @@ class Player extends EventTarget {
 	 */
 	getDuration() {
 		return this._corePlayer.getDuration();
+	}
+
+	/**
+	 * @return {TimeRanges}
+	 */
+	getBuffered() {
+		return this._corePlayer.getBuffered();
+	}
+
+	/**
+	 * @return {TimeRanges}
+	 */
+	getPlayed() {
+		return this._corePlayer.getPlayed();
 	}
 
 	/**
@@ -344,6 +380,64 @@ class Player extends EventTarget {
 	seek(time) {
 		this._cfg.logger.debug('#seek');
 		this._corePlayer.seek(time);
+	}
+
+	/**
+	 * @param {number} level 0 - 1
+	 */
+	setVolume(level) {
+		this._corePlayer.setVolume(level);
+	}
+
+	/**
+	 * @param {boolean} on
+	 */
+	setMute(on) {
+		this._corePlayer.setMute(on);
+	}
+
+	/**
+	 * Reset.
+	 */
+	async reset() {
+		this._cfg.logger.debug('#reset');
+		this._locker.lock('reset');
+
+		const source = this._src;
+		const currentTime = this._corePlayer.getCurrentTime();
+		const duration = this._corePlayer.getDuration();
+		const ended = this._corePlayer.isEnded();
+
+		const timeout = makeTimeout(1000);
+		const timeupdate = Promise.race([
+			this._nextEvent(Player.Event.TIMEUPDATE),
+			timeout,
+		]);
+		if (this._src && !this._corePlayer.getSource()) {
+			// TODO: wait for source ready
+		}
+		this._corePlayer.pause();
+		this._corePlayer.resetSource();
+		this._src = null;
+		try {
+			await timeupdate;
+			timeout.$cancel();
+		}
+		catch (err) {
+			// empty
+		}
+
+		Object.values(this._nextEvents).forEach(task => task.reject());
+		this._nextEvents = {};
+		this._locker.unlockAll();
+
+		this.dispatchEvent(createEvent(Player.Event.RESET, {
+			level: Player.LEVEL,
+			source,
+			currentTime,
+			duration,
+			ended,
+		}));
 	}
 
 	async _init() {
@@ -523,7 +617,7 @@ class Player extends EventTarget {
 		const task = this._nextEvents[eventType];
 		if (task) {
 			task.resolve();
-			this._nextEvents[eventType] = null;
+			delete this._nextEvents[eventType];
 		}
 	}
 }
@@ -554,6 +648,7 @@ const EVENT = {
 	SUSPEND: 'suspend',
 	WAITING: 'waiting',
 	STOP: 'stop',
+	RESET: 'reset',
 	DESTROYING: 'destroying',
 
 	/**

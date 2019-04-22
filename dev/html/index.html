@@ -72,6 +72,10 @@ player.addEventListener(Player.Event.SEEKED, event => {
 	console.log('>> SEEKED', event, player.isPaused());
 });
 
+player.addEventListener(Player.Event.RESET, event => {
+	console.log('>> RESET', event, player.isPaused());
+});
+
 player.addEventListener(Player.Event.ERROR, event => {
 	console.error(event.detail);
 });
