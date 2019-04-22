@@ -1,5 +1,5 @@
 'use strict';
-import { DEBUG, LEVELS } from '../settings.js';
+import { LEVELS } from '../settings.js';
 import LudantonError from '../utils/Error.js';
 import EventManager from '../utils/EventManager.js';
 import { createLocalId } from '../utils/general.js';
@@ -30,21 +30,27 @@ class NativePlayer {
 	/**
 	 * @param  {HTMLVideoElement} element
 	 * @param  {Function} eventHandler
+	 * @param  {Object} [config]
 	 */
-	constructor(element, eventHandler) {
+	constructor(element, eventHandler, config = {}) {
 		/**
 		 * @type {HTMLVideoElement}
 		 */
 		this._element = element;
 
 		/**
+		 * @type {(Logger|null)}
+		 */
+		this._logger = config.logger;
+
+		/**
 		 * @type {Function}
 		 */
-		this._transferEvent = DEBUG ? new Proxy(eventHandler, {
+		this._transferEvent = this._logger ? new Proxy(eventHandler, {
 			apply: (target, thisArg, argumentsList) => {
 				const [event] = argumentsList;
 				if (this._logger) {
-					this._logger.trace(`@${event.type}`, event);
+					this._logger.debug(`@${event.type}`, event);
 				}
 
 				target(...argumentsList);
@@ -115,11 +121,6 @@ class NativePlayer {
 		 */
 		this._destroyed = false;
 
-		/**
-		 * @type {(Object|null)}
-		 */
-		this._logger = null;
-
 		this._eventManager.listen(this._element, 'volumechange');
 		this._eventManager.listen(this._element, 'emptied');
 		this._eventManager.listen(this._element, 'stalled');
@@ -162,10 +163,6 @@ class NativePlayer {
 
 	toString() {
 		return `[object ${this.constructor.name}#${this._id}]`;
-	}
-
-	setLogger(logger) {
-		this._logger = logger;
 	}
 
 	/**
@@ -318,7 +315,7 @@ class NativePlayer {
 	 */
 	setSource(source) {
 		if (this._logger) {
-			this._logger.trace('#setSource', [source]);
+			this._logger.debug('#setSource', [source]);
 		}
 
 		this._rejectPlayPromise();
@@ -333,7 +330,7 @@ class NativePlayer {
 	 */
 	setSourceWithoutInterruption(source) {
 		if (this._logger) {
-			this._logger.trace('#setSourceWithoutInterruption', [source]);
+			this._logger.debug('#setSourceWithoutInterruption', [source]);
 		}
 
 		this._source = source;
@@ -345,7 +342,7 @@ class NativePlayer {
 	 */
 	resetSource() {
 		if (this._logger) {
-			this._logger.trace('#resetSource');
+			this._logger.debug('#resetSource');
 		}
 
 		this._rejectPlayPromise();
@@ -369,7 +366,7 @@ class NativePlayer {
 	 */
 	load() {
 		if (this._logger) {
-			this._logger.trace('#load');
+			this._logger.debug('#load');
 		}
 
 		this._element.load();
@@ -382,7 +379,7 @@ class NativePlayer {
 	 */
 	play() {
 		if (this._logger) {
-			this._logger.trace('#play');
+			this._logger.debug('#play');
 		}
 
 		this._playPromise = this._element.play();
@@ -402,7 +399,7 @@ class NativePlayer {
 	 */
 	pause() {
 		if (this._logger) {
-			this._logger.trace('#pause');
+			this._logger.debug('#pause');
 		}
 
 		this._element.pause();
@@ -413,7 +410,7 @@ class NativePlayer {
 	 */
 	setVolume(level) {
 		if (this._logger) {
-			this._logger.trace('#setVolume', [level]);
+			this._logger.debug('#setVolume', [level]);
 		}
 
 		this._element.volume = level;
@@ -424,7 +421,7 @@ class NativePlayer {
 	 */
 	setMute(on) {
 		if (this._logger) {
-			this._logger.trace('#setMute', [on]);
+			this._logger.debug('#setMute', [on]);
 		}
 
 		this._element.muted = !!on;
@@ -435,7 +432,7 @@ class NativePlayer {
 	 */
 	seek(time) {
 		if (this._logger) {
-			this._logger.trace('#seek', [time]);
+			this._logger.debug('#seek', [time]);
 		}
 
 		this._element.currentTime = time;
@@ -446,7 +443,7 @@ class NativePlayer {
 	 */
 	fastSeek(time) {
 		if (this._logger) {
-			this._logger.trace('#fastSeek', [time]);
+			this._logger.debug('#fastSeek', [time]);
 		}
 
 		if (typeof this._element.fastSeek === 'function') {
@@ -461,7 +458,7 @@ class NativePlayer {
 	 */
 	reset() {
 		if (this._logger) {
-			this._logger.trace('#reset');
+			this._logger.debug('#reset');
 		}
 
 		this.resetSource();
@@ -469,7 +466,7 @@ class NativePlayer {
 
 	_resolvePlayPromise() {
 		if (this._logger) {
-			this._logger.trace('#_resolvePlayPromise');
+			this._logger.debug('#_resolvePlayPromise');
 		}
 
 		if (this._playResolve) {
@@ -481,7 +478,7 @@ class NativePlayer {
 
 	_rejectPlayPromise() {
 		if (this._logger) {
-			this._logger.trace('#_rejectPlayPromise');
+			this._logger.debug('#_rejectPlayPromise');
 		}
 
 		if (this._playReject) {
@@ -497,7 +494,7 @@ class NativePlayer {
 	 */
 	_handlePlaying(event) {
 		if (this._logger) {
-			this._logger.trace('#_handlePlaying', event);
+			this._logger.debug('#_handlePlaying', event);
 		}
 
 		this._resolvePlayPromise();
@@ -511,7 +508,7 @@ class NativePlayer {
 	 */
 	_handleError(event) {
 		if (this._logger) {
-			this._logger.trace('#_handleError', [event]);
+			this._logger.debug('#_handleError', [event]);
 		}
 
 		const mediaError = event.target.error;

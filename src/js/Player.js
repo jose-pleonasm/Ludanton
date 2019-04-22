@@ -109,9 +109,11 @@ class Player extends EventTarget {
 		/**
 		 * @type {NativePlayer}
 		 */
-		this._corePlayer = this._cfg.techPlayerFactory(element, this._handleNativeEvent);
-
-		this._corePlayer.setLogger(loggerGetChild ? logger.getChild('TechPlayer') : logger);
+		this._corePlayer = this._cfg.techPlayerFactory(
+			element,
+			this._handleNativeEvent,
+			{ logger: loggerGetChild ? logger.getChild('TechPlayer') : logger },
+		);
 
 		this._init();
 	}
@@ -266,12 +268,12 @@ class Player extends EventTarget {
 	}
 
 	/**
-	 * Set the source.
+	  Set the source.
 	 *
 	 * @param {(MediaUrl|MediaObject|Array<MediaObject>)} src
 	 */
 	setSource(src) {
-		this._cfg.logger.trace('#setSource', [src]);
+		this._cfg.logger.debug('#setSource', [src]);
 		this._src = src;
 
 		const source = createSource(src);
@@ -295,7 +297,7 @@ class Player extends EventTarget {
 	 * @return {Promise}
 	 */
 	play() {
-		this._cfg.logger.trace('#play');
+		this._cfg.logger.debug('#play');
 		return this._corePlayer.play();
 	}
 
@@ -303,7 +305,7 @@ class Player extends EventTarget {
 	 * Pauses playback of the source.
 	 */
 	pause() {
-		this._cfg.logger.trace('#pause');
+		this._cfg.logger.debug('#pause');
 		this._corePlayer.pause();
 	}
 
@@ -313,7 +315,7 @@ class Player extends EventTarget {
 	 * Resets playback.
 	 */
 	async stop() {
-		this._cfg.logger.trace('#stop');
+		this._cfg.logger.debug('#stop');
 		this._locker.lock('stop');
 
 		const currentTime = this._corePlayer.getCurrentTime();
@@ -340,12 +342,12 @@ class Player extends EventTarget {
 	 * @param {number} time
 	 */
 	seek(time) {
-		this._cfg.logger.trace('#seek');
+		this._cfg.logger.debug('#seek');
 		this._corePlayer.seek(time);
 	}
 
 	async _init() {
-		this._cfg.logger.trace('#init');
+		this._cfg.logger.debug('#init');
 		const element = this._corePlayer.getElement();
 		const sourceElements = element.src ? [{ src: element.src }] : Array.from(
 			element.getElementsByTagName('source')

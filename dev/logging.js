@@ -2,95 +2,34 @@
 
 (function (logging, commonkit, browserkit) {
 	'use strict';
-	const Logger = logging.getLoggerClass();
-	const Filter = logging.Filter;
-
-	Logger.TRACE = 15;
-
-	Logger.getLevelName = function(level) {
-		var levelName = '';
-
-		if (level === Logger.DEBUG) {
-			levelName = 'DEBUG';
-		} else if (level === Logger.TRACE) {
-			levelName = 'TRACE';
-		} else if (level === Logger.INFO) {
-			levelName = 'INFO';
-		} else if (level === Logger.WARNING) {
-			levelName = 'WARNING';
-		} else if (level === Logger.ERROR) {
-			levelName = 'ERROR';
-		} else if (level === Logger.CRITICAL) {
-			levelName = 'CRITICAL';
-		} else if (level === Logger.NOTSET) {
-			levelName = 'NOTSET';
-		}
-
-		return levelName;
-	};
-
-	Logger.getLevelByName = function(levelName) {
-		var level = '';
-
-		if (levelName === 'DEBUG') {
-			level = Logger.DEBUG;
-		} else if (levelName === 'TRACE') {
-			level = Logger.TRACE;
-		} else if (levelName === 'INFO') {
-			level = Logger.INFO;
-		} else if (levelName === 'WARNING') {
-			level = Logger.WARNING;
-		} else if (levelName === 'ERROR') {
-			level = Logger.ERROR;
-		} else if (levelName === 'CRITICAL') {
-			level = Logger.CRITICAL;
-		} else if (levelName === 'NOTSET') {
-			level = Logger.NOTSET;
-		}
-
-		return level;
-	};
-
-	Logger.prototype.trace = function(msg, args = null) {
-		if (this.isEnabledFor(Logger.TRACE)) {
-			this._log(Logger.TRACE, msg, null, { args });
-		}
-	};
-
 
 	logging.getLoggerByClass = function(klass) {
 		return logging.getLogger(klass.constructor.name);
 	};
 
-	logging.LevelFilter = class LevelFilter extends Filter {
-		constructor(level) {
-			super();
-
-			this._level = level;
-		}
-
-		filter(record) {
-			return record.levelno === this._level;
-		}
-	};
-
-	logging.ExceptLevelFilter = class ExceptLevelFilter extends Filter {
-		constructor(level) {
-			super();
-
-			this._level = level;
-		}
-
-		filter(record) {
-			return record.levelno !== this._level;
-		}
-	};
-
-	logging.ChannelRemover = class ChannelRemover extends Filter {
+	logging.ChannelRemover = class ChannelRemover extends logging.Filter {
 		filter(record) {
 			var parts = record.name.split('.');
 
 			record.name = parts.splice(1).join('.');
+			return true;
+		}
+	};
+
+	logging.ArgsFilter = class ArgsFilter extends logging.Filter {
+		filter(record) {
+			const isMethodCall = record.message.indexOf('#') === 0;
+			const isEventFire = record.message.indexOf('@') === 0;
+
+			if (isMethodCall) {
+				record.args = record.error;
+				delete record.error;
+			}
+			if (isEventFire) {
+				record.args = record.error;
+				delete record.error;
+			}
+
 			return true;
 		}
 	};
@@ -175,14 +114,14 @@
 			verbose: {
 				format: '%(asctime); %(levelname); %(name); %(message)',
 			},
-			stylish: {
+			rich: {
 				class: 'logging.StylishConsoleFormatter',
 				format: '%(levelname)-10s %(name)-20s %(message)s\t%(args)O',
 				styles: {
 					...logging.StylishConsoleFormatter.COLORED_LEVELNAME
 				},
 			},
-			trace: {
+			stylish: {
 				class: 'logging.StylishConsoleFormatter',
 				format: '%(name)s %(message)s %(args)O',
 				styles: {
@@ -207,16 +146,11 @@
 			},
 		},
 		filters: {
-			trace_only: {
-				class: 'logging.LevelFilter',
-				level: 'TRACE',
-			},
-			trace_less: {
-				class: 'logging.ExceptLevelFilter',
-				level: 'TRACE',
-			},
 			remove_channel: {
 				class: 'logging.ChannelRemover',
+			},
+			record_args: {
+				class: 'logging.ArgsFilter',
 			},
 		},
 		handlers: {
@@ -225,14 +159,7 @@
 				level: 'DEBUG',
 				grouping: false,
 				formatter: 'stylish',
-				filters: ['trace_less', 'remove_channel'],
-			},
-			'main:console_trace': {
-				class: 'logging.ConsoleHandler',
-				level: 'TRACE',
-				grouping: false,
-				formatter: 'trace',
-				filters: ['trace_only', 'remove_channel'],
+				filters: ['remove_channel'],
 			},
 		},
 		loggers: {
@@ -241,9 +168,12 @@
 			},
 			'channel:main': {
 				level: 'DEBUG',
-				handlers: ['main:console', 'main:console_trace'],
+				handlers: ['main:console'],
 			},
 		},
 	});
+
+	const argsFilter = new logging.ArgsFilter();
+	logging.getLogger('channel:main')._handlers[0].addFilter(argsFilter);
 
 }(logging, logging_commonkit, logging_browserkit));
