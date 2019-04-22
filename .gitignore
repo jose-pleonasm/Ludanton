@@ -98,3 +98,7 @@ node_modules/
 # - PROJECT SPECIFIC
 
 dist/*
+
+dev/logging.min.js
+dev/logging_commonkit.min.js
+dev/logging_browserkit.min.js
