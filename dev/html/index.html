@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<script src="./dev/logging.min.js"></script>
+	<script src="./dev/logging_commonkit.min.js"></script>
+	<script src="./dev/logging_browserkit.min.js"></script>
+	<script src="./dev/logging.js"></script>
 	<title>Ludanton demo - HTML</title>
 </head>
 <body>
@@ -23,7 +27,9 @@ const Inspector = Ludanton.default.Inspector;
 const InspectorView = Ludanton.default.InspectorViewHtml;
 //const player = document.getElementById('button');
 const element = document.querySelector('#video');
-const player = new Player(element);
+const player = new Player(element, {
+	logger: logging.getLogger('channel:main'),
+});
 const inspector = new Inspector({ interval: 100 });
 const inspectorView = new InspectorView(
 	inspector,

@@ -116,7 +116,7 @@
 			},
 			rich: {
 				class: 'logging.StylishConsoleFormatter',
-				format: '%(levelname)-10s %(name)-20s %(message)s\t%(args)O',
+				format: '%(levelname)-10s %(name)-15s %(message)s\t%(args)O',
 				styles: {
 					...logging.StylishConsoleFormatter.COLORED_LEVELNAME
 				},
