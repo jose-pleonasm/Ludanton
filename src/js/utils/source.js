@@ -51,9 +51,9 @@ export const createSource = (msd) => {
 
 /**
  * getSourceByResolution.
- * @param  {QualityMediaList} sources
+ * @param  {Array<Source>} sources
  * @param  {Resolution} resolution
- * @return {QualityDescriptor}
+ * @return {Source}
  */
 export const getSourceByResolution = (sources, resolution) => {
 	const resSources = sources.sort((a, b) => {

@@ -66,5 +66,5 @@
  * @typedef {Object} Source
  * @property {string} src
  * @property {string} type
- * @property {QualityDescriptor} qualityDescriptor
+ * @property {(QualityDescriptor|null)} qualityDescriptor
  */
