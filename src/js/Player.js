@@ -460,7 +460,11 @@ class Player extends EventTarget {
 		}
 
 		const sources = sourceElements.map(
-			({ src, type }) => ({ src, type: type || getTypeByFilename(src) })
+			({ src, type, dataset }) => ({
+				src,
+				type: type || getTypeByFilename(src),
+				qualityDescriptor: dataset.quality ? dataset.quality : '',
+			})
 		);
 		const canSetSource = this._corePlayer.isPaused()
 			&& !this._corePlayer.getPlayed().length
