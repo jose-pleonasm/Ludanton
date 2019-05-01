@@ -349,6 +349,8 @@ class Player extends EventTarget {
 	 * Stops playback of the source.
 	 *
 	 * Resets playback.
+	 *
+	 * @return {Promise}
 	 */
 	async stop() {
 		this._cfg.logger.debug('#stop');
@@ -473,7 +475,7 @@ class Player extends EventTarget {
 	}
 
 	_getOptimalSource(sources) {
-		const canPlaySource = this._corePlayer.constructor.canPlaySource;
+		const canPlaySource = this._corePlayer.canPlaySource.bind(this._corePlayer);
 		const probably = [];
 		const maybe = [];
 
@@ -528,6 +530,11 @@ class Player extends EventTarget {
 		);
 	}
 
+	/**
+	 * @private
+	 * @param  {Array<Source>} sources
+	 * @return {Source}
+	 */
 	_getBestQualitySource(sources) {
 		const qualities = sources.filter(source => !!source.qualityDescriptor);
 
