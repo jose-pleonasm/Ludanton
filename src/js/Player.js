@@ -110,6 +110,7 @@ class Player extends EventTarget {
 					Player.Event.STALLED,
 					Player.Event.SUSPEND,
 					Player.Event.WAITING,
+					Player.Event.EMPTIED,
 				],
 			},
 		});
