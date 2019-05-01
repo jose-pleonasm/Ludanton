@@ -54,6 +54,14 @@ describe('#parseQualityDescriptor', () => {
 
 		expect(result).toEqual({ height: 720, unit: 'px' });
 	});
+	test('should return correct height for 4K.', () => {
+		const qualityDescriptor = '4K';
+		let result = null;
+
+		result = parseQualityDescriptor(qualityDescriptor);
+
+		expect(result).toEqual({ height: 2160, unit: 'px' });
+	});
 	test('should return null.', () => {
 		const qualityDescriptor = '720ap';
 		let result = null;

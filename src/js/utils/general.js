@@ -2,7 +2,7 @@
 import { EXT_TYPE_MAP, PACKAGE_CODE } from '../settings.js';
 
 
-const QUALITY_DESCRIPTOR_PATTERN = /([0-9]+)(p)/i;
+const QUALITY_DESCRIPTOR_PATTERN = /([0-9]+)(p|k)/i;
 let scope = Date.now().toString(16);
 let counter = 10000000;
 
@@ -30,13 +30,15 @@ export const getTypeByFilename = (path) => {
  */
 export const parseQualityDescriptor = (descriptor) => {
 	const result = descriptor.match(QUALITY_DESCRIPTOR_PATTERN);
-
 	if (!result) {
 		return null;
 	}
 
+	const nmbr = Number(result[1]);
+	const height = result[2].toUpperCase() === 'K' ? nmbr * 540 : nmbr;
+
 	return {
-		height: Number(result[1]),
+		height,
 		unit: 'px',
 	};
 };
