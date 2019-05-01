@@ -14,6 +14,8 @@ export const EXT_TYPE_MAP = Object.freeze({
 
 export const RESOLUTION_FACTOR = 1.15;
 
+export const BUFFERED_JOIN_MAX_GAP = 0.2; // in seconds
+
 export const GET_CURRENT_SRC_INTERVAL = 200;
 
 export const GET_CURRENT_SRC_TIMEOUT = 2e3;

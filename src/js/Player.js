@@ -1,7 +1,7 @@
 'use strict';
 import {
 	RESOLUTION_FACTOR, GET_CURRENT_SRC_TIMEOUT, GET_CURRENT_SRC_INTERVAL,
-	LEVELS,
+	LEVELS, BUFFERED_JOIN_MAX_GAP,
 } from './settings.js';
 import LudantonError from './utils/Error.js';
 import EventTarget from './utils/EventTarget.js';
@@ -11,6 +11,7 @@ import env from './utils/env.js';
 import createEvent from './utils/createEvent.js';
 import Locker from './utils/Locker.js';
 import NullLogger from './utils/NullLogger.js';
+import { toArray } from './utils/timeRanges.js';
 import { techPlayerFactory } from './core/techPlayerFactory.js';
 
 
@@ -233,17 +234,17 @@ class Player extends EventTarget {
 	}
 
 	/**
-	 * @return {TimeRanges}
+	 * @return {Array<TimeRange>}
 	 */
 	getBuffered() {
-		return this._corePlayer.getBuffered();
+		return toArray(this._corePlayer.getBuffered(), BUFFERED_JOIN_MAX_GAP);
 	}
 
 	/**
-	 * @return {TimeRanges}
+	 * @return {Array<TimeRange>}
 	 */
 	getPlayed() {
-		return this._corePlayer.getPlayed();
+		return toArray(this._corePlayer.getPlayed());
 	}
 
 	/**
