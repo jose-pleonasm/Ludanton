@@ -571,7 +571,7 @@ class Player extends EventTarget {
 		return qualities.length
 			? getSourceByResolution(
 				qualities,
-				this._cfg.screenResolution
+				this._cfg.screenResolution // TODO: use current resolution
 			)
 			: sources[0];
 	}
