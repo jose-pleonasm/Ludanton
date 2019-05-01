@@ -11,7 +11,7 @@ import env from './utils/env.js';
 import createEvent from './utils/createEvent.js';
 import Locker from './utils/Locker.js';
 import NullLogger from './utils/NullLogger.js';
-import { toArray } from './utils/timeRanges.js';
+import { toArray, aheadOf } from './utils/timeRanges.js';
 import { techPlayerFactory } from './core/techPlayerFactory.js';
 
 
@@ -238,6 +238,15 @@ class Player extends EventTarget {
 	 */
 	getBuffered() {
 		return toArray(this._corePlayer.getBuffered(), BUFFERED_JOIN_MAX_GAP);
+	}
+
+	/**
+	 * Retuns the number of seconds buffered, ahead of the current time.
+	 *
+	 * @return {number}
+	 */
+	getBufferedAheadOf() {
+		return aheadOf(this.getBuffered(), this.getCurrentTime());
 	}
 
 	/**

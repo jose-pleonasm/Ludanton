@@ -32,3 +32,23 @@ export const toArray = (timeRanges, joinGap = 0) => {
 
 	return r;
 };
+
+/**
+ * @param  {Array<TimeRange>} buffered
+ * @param  {number} time
+ * @return {number}
+ */
+export const aheadOf = (buffered, time) => {
+	if (!buffered.length) {
+		return 0;
+	}
+
+	for (let i = buffered.length - 1; i >= 0; --i) {
+		const { start, end } = buffered[i];
+		if (start <= time && time < end) {
+			return end - time;
+		}
+	}
+
+	return 0;
+};
