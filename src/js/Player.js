@@ -400,6 +400,8 @@ class Player extends EventTarget {
 
 	/**
 	 * Reset.
+	 *
+	 * @return {Promise}
 	 */
 	async reset() {
 		this._cfg.logger.debug('#reset');
@@ -442,6 +444,10 @@ class Player extends EventTarget {
 		}));
 	}
 
+	/**
+	 * @private
+	 * @return {Promise}
+	 */
 	async _init() {
 		this._cfg.logger.debug('#init');
 		const element = this._corePlayer.getElement();
@@ -474,6 +480,11 @@ class Player extends EventTarget {
 		}
 	}
 
+	/**
+	 * @private
+	 * @param  {Array<Source>} sources
+	 * @return {(Source|null)}
+	 */
 	_getOptimalSource(sources) {
 		const canPlaySource = this._corePlayer.canPlaySource.bind(this._corePlayer);
 		const probably = [];
@@ -501,6 +512,10 @@ class Player extends EventTarget {
 		return null;
 	}
 
+	/**
+	 * @private
+	 * @return {Promise<string>}
+	 */
 	_getCurrentSrc() {
 		const getCurrentSrcWhenAvailable = (timeout, resolve, reject) => {
 			const currentSrc = this._corePlayer.getCurrentSrc();
@@ -599,6 +614,11 @@ class Player extends EventTarget {
 		this.dispatchEvent(createEvent(type, detail));
 	}
 
+	/**
+	 * @private
+	 * @param  {(Error|*)} error
+	 * @return {Event}
+	 */
 	_dispatchError(error) {
 		const event = createEvent(Player.Event.ERROR, error);
 
@@ -607,6 +627,11 @@ class Player extends EventTarget {
 		return event;
 	}
 
+	/**
+	 * @private
+	 * @param  {string} eventType
+	 * @return {Promise}
+	 */
 	_nextEvent(eventType) {
 		if (!this._nextEvents[eventType]) {
 			this._nextEvents[eventType] = {};
@@ -620,6 +645,10 @@ class Player extends EventTarget {
 		return this._nextEvents[eventType].promise;
 	}
 
+	/**
+	 * @private
+	 * @param  {string} eventType
+	 */
 	_resolveNextEvent(eventType) {
 		const task = this._nextEvents[eventType];
 		if (task) {
