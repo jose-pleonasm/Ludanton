@@ -3,7 +3,7 @@ global.logging = require('py-logging');
 global.commonkit = require('py-logging/commonkit');
 global.py_logging_browserkit = require('py-logging-browserkit');
 
-const Ludanton = require('../../dist/ludanton.js').default;
+const Ludanton = require('../../dist/ludanton.js');
 
 /*
 const error = new Ludanton.LudantonError(

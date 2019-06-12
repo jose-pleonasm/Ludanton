@@ -21,7 +21,7 @@ module.exports = {
 		filename: 'ludanton.js',
 		libraryTarget: 'umd',
 		globalObject: 'this',
-		// libraryExport: 'default',
+		libraryExport: 'default',
 		library: 'Ludanton',
 	},
 	module: {
