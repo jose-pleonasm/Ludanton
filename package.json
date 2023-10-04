@@ -1,0 +1,69 @@
+{
+  "name": "ludanton",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "dev": "NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
+    "build": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "build-old": "npm run transform && npm run browserify",
+    "doc": "./node_modules/.bin/jsdoc -c ./jsdoc.json -r ./src/js/*.js ./src/js/**/*.js",
+    "doc-public": "./node_modules/.bin/jsdoc -c ./jsdoc.json -r ./src/js/Player.js",
+    "transform": "babel src/js --out-dir dist --source-map",
+    "browserify": "browserify dist/dev.js --standalone Ludanton > dist/ludanton.js",
+    "build:logging-core": "browserify ./node_modules/py-logging/core/logging.js --s logging > ./tmp.js && uglifyjs tmp.js -c > ./dev/logging.min.js && rm tmp.js",
+    "build:logging-commonkit": "browserify ./node_modules/py-logging/commonkit/index.js --s logging_commonkit > ./tmp.js && uglifyjs tmp.js -c > ./dev/logging_commonkit.min.js && rm tmp.js",
+    "build:logging-browserkit": "browserify ./node_modules/py-logging-browserkit/lib/browserkit.js --s logging_browserkit > ./tmp.js && uglifyjs tmp.js -c > ./dev/logging_browserkit.min.js && rm tmp.js",
+    "build:logging": "npm run build:logging-core && npm run build:logging-commonkit && npm run build:logging-browserkit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jose-pleonasm/Ludanton.git"
+  },
+  "author": "jose-pleonasm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jose-pleonasm/Ludanton/issues"
+  },
+  "homepage": "https://github.com/jose-pleonasm/Ludanton#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-1": "^6.24.1",
+    "browserify": "^16.2.3",
+    "css-loader": "^2.1.0",
+    "eslint": "^4.19.1",
+    "fast-async": "^6.3.8",
+    "get-value": "^3.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^23.6.0",
+    "jsdoc": "^3.6.2",
+    "jsdoc-autoprivate": "0.0.1",
+    "postcss": "^7.0.17",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.5.0",
+    "py-logging": "^2.5.1",
+    "py-logging-browserkit": "^1.2.1",
+    "regenerator-runtime": "^0.11.1",
+    "style-loader": "^0.23.1",
+    "stylelint": "^9.9.0",
+    "stylelint-config-standard": "^18.2.0",
+    "uglifyjs": "^2.4.11",
+    "webpack": "^4.33.0",
+    "webpack-cli": "^3.3.4",
+    "webpack-dev-server": "^3.7.1"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0"
+  }
+}

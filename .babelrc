@@ -1,0 +1,4 @@
+{
+	"presets": [["env", { "exclude": ["transform-regenerator"] }], "stage-1"],
+	"plugins": ["transform-es2015-classes", "fast-async"]
+}

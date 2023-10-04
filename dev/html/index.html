@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="<%= htmlWebpackPlugin.options.lang %>">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<script src="./dev/logging.min.js"></script>
+	<script src="./dev/logging_commonkit.min.js"></script>
+	<script src="./dev/logging_browserkit.min.js"></script>
+	<script src="./dev/logging.js"></script>
+	<title>Ludanton demo - HTML</title>
+</head>
+<body>
+	<div id="container">
+		<video id="video" controls>
+			<!-- <source src="https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4"> -->
+			<source src="https://vjs.zencdn.net/v/oceans.mp4?SD" title="SD" data-quality="360p">
+			<source src="https://vjs.zencdn.net/v/oceans.mp4?HD" title="HD" data-quality="720p">
+		</video>
+		<button id="button">button</button>
+		<div id="view" class="inspector-container"></div>
+	</div>
+	<script type="text/javascript">
+
+'use strict';
+
+const Player = Ludanton.Player;
+const Inspector = Ludanton.Inspector;
+const InspectorView = Ludanton.InspectorViewHtml;
+//const player = document.getElementById('button');
+const element = document.querySelector('#video');
+const player = new Player(element, {
+	logger: logging.getLogger('channel:main'),
+});
+const inspector = new Inspector({ interval: 100 });
+const inspectorView = new InspectorView(
+	inspector,
+	document.querySelector('#view'),
+	{
+		showProperties: [
+			'paused',
+			'seeking',
+			'ended',
+			'readyState',
+			'networkState',
+			'currentTime',
+			'videoWidth',
+			'videoHeight',
+			'currentSource.src',
+			'currentSrc',
+		],
+	}
+);
+
+inspector.set(player, element);
+
+player.addEventListener(Player.Event.CANPLAY, event => {
+	console.log('>> CANPLAY', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.PLAY, event => {
+	console.log('>> PLAY', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.PLAYING, event => {
+	console.log('>> PLAYING', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.TIMEUPDATE, event => {
+	console.log('>> TIMEUPDATE', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.SEEKED, event => {
+	console.log('>> SEEKED', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.RESET, event => {
+	console.log('>> RESET', event, player.isPaused());
+});
+
+player.addEventListener(Player.Event.ERROR, event => {
+	console.error(event.detail);
+});
+
+// setTimeout(() => {
+// 	player.setSource(
+// 		'https://storage.googleapis.com/coverr-main/mp4/Fishermans-Village.mp4'
+// 	);
+// 	player.play();
+// }, 5e3);
+	</script>
+	<a href="./test.html">Link</a>
+</body>
+</html>

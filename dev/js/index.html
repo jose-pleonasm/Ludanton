@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="<%= htmlWebpackPlugin.options.lang %>">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Ludanton demo - JS API</title>
+	<script src="./dev/logging.min.js"></script>
+	<script src="./dev/logging_commonkit.min.js"></script>
+	<script src="./dev/logging_browserkit.min.js"></script>
+	<script src="./dev/logging.js"></script>
+</head>
+<body>
+	<div id="container">
+		<video id="video" controls muted></video>
+		<button id="button">button</button>
+		<div id="view" class="inspector-container"></div>
+	</div>
+	<script type="text/javascript">
+
+'use strict';
+
+const Player = Ludanton.Player;
+const Inspector = Ludanton.Inspector;
+const InspectorView = Ludanton.InspectorViewHtml;
+//const player = document.getElementById('button');
+const element = document.querySelector('#video');
+const player = new Player(element, {
+	logger: logging.getLogger('channel:main'),
+});
+const inspector = new Inspector();
+const inspectorView = new InspectorView(
+	inspector,
+	document.querySelector('#view'),
+	{
+		showProperties: [
+			'autoplay',
+			'paused',
+			'seeking',
+			'ended',
+			'readyState',
+			'networkState',
+			'currentTime',
+			'videoWidth',
+			'videoHeight',
+			'currentSource.src',
+			'currentSrc',
+		],
+	}
+);
+
+inspector.set(player, element);
+
+// player.addEventListener(Player.Event.PLAY, event => {
+// 	console.log(event);
+// });
+
+// player.addEventListener(Player.Event.PLAYING, event => {
+// 	console.log(event);
+// });
+
+// player.addEventListener(Player.Event.ERROR, event => {
+// 	console.error(event.detail);
+// 	console.debug('code', event.detail.code);
+// 	console.debug('data', event.detail.data);
+// });
+
+player.addEventListener(Player.Event.STOP, event => {
+	console.log(event, player.getCurrentTime());
+});
+
+/*
+player.setSource(
+	'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.m3u'
+);
+*/
+
+player.setSource([
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '720p'
+	},
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_lq.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '360p'
+	},
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_4k.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '2160p'
+	},
+]);
+player.play();
+
+// setTimeout(() => {
+// 	player.setSource(
+// 		'https://storage.googleapis.com/coverr-main/mp4/Fishermans-Village.mp4'
+// 	);
+// 	player.play();
+// }, 5e3);
+
+	</script>
+	<a href="https://www.seznam.cz">Link</a>
+</body>
+</html>

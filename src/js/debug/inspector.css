@@ -1,0 +1,22 @@
+:root {
+	--mainColor: black;
+}
+
+.inspector,
+.inspector input {
+	font-family: monospace;
+	color: var(--mainColor);
+}
+
+.inspector {
+	font-size: 1.1em;
+}
+
+.inspector label {
+	display: inline-block;
+	width: 11em;
+}
+
+.inspector input {
+	font-size: 1em;
+}

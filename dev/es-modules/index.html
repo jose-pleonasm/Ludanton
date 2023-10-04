@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Ludanton demo - native ES</title>
+</head>
+<body>
+	<div id="container">
+		<video id="video" controls muted></video>
+		<button id="button">button</button>
+	</div>
+	<script type="module">
+'use strict';
+import Ludanton from '../../src/js/index.js';
+
+const element = document.querySelector('#video');
+const player = new Ludanton.Player(element, {
+	logger: console
+});
+
+window.player = player;
+player.addEventListener(Ludanton.Player.Event.ERROR, event => {
+	console.error(event.detail);
+});
+
+player.setSource([
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_hd.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '720p'
+	},
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_lq.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '360p'
+	},
+	{
+		src: 'https://ia800209.us.archive.org/20/items/ElephantsDream/ed_4k.mp4',
+		type: 'video/mp4',
+		qualityDescriptor: '2160p'
+	},
+]);
+player.play();
+	</script>
+</body>
+</html>
